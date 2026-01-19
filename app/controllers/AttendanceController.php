@@ -86,9 +86,7 @@ function attendance_checkin(PDO $pdo)
     );
     $stmt->execute([$user_id, $project_id]);
 
-    // Update application status to 'attended'
-    $stmt = $pdo->prepare("UPDATE volunteer_applications SET status = 'attended' WHERE user_id = ? AND project_id = ? AND status != 'completed'");
-    $stmt->execute([$user_id, $project_id]);
+    // status remains 'applied' until checkout
 
     $status = 'success_checkin';
     require_once __DIR__ . '/../views/user/scan_result.php';

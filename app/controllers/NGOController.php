@@ -414,3 +414,56 @@ function ngo_adopt_proposal(PDO $pdo)
     
     redirect('ngo_project_new');
 }
+
+/**
+ * View feedback received for NGO projects
+ */
+function ngo_feedback(PDO $pdo)
+{
+    require_login('ngo');
+    $ngo = ngo_find_by_user($pdo, (int)$_SESSION['user_id']);
+    if (!$ngo) die('NGO profile not found.');
+
+    $project_id = isset($_GET['project_id']) ? (int)$_GET['project_id'] : null;
+
+    if ($project_id) {
+        // Detailed view for a specific project
+        $stmt = $pdo->prepare("
+            SELECT f.*, u.name as user_name, u.email as user_email
+            FROM feedback f
+            JOIN users u ON f.user_id = u.id
+            JOIN projects p ON f.project_id = p.id
+            WHERE f.project_id = ? AND p.ngo_id = ?
+            ORDER BY f.created_at DESC
+        ");
+        $stmt->execute([$project_id, $ngo['id']]);
+        $feedbacks = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        $stmt = $pdo->prepare("SELECT title FROM projects WHERE id = ?");
+        $stmt->execute([$project_id]);
+        $project_title = $stmt->fetchColumn();
+
+        $view_details = true;
+    } else {
+        // List projects that have feedback
+        $stmt = $pdo->prepare("
+            SELECT p.id, p.title, p.event_date, p.location, p.image_path,
+                   COUNT(f.id) as feedback_count, 
+                   AVG(f.event_rating) as avg_rating
+            FROM projects p
+            JOIN feedback f ON p.id = f.project_id
+            WHERE p.ngo_id = ?
+            GROUP BY p.id
+            ORDER BY p.event_date DESC
+        ");
+        $stmt->execute([$ngo['id']]);
+        $projects_feedback = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        $view_details = false;
+    }
+
+    $pageTitle = 'Drive Feedback';
+    include __DIR__ . '/../views/layouts/header.php';
+    include __DIR__ . '/../views/ngo/feedback.php';
+    include __DIR__ . '/../views/layouts/footer.php';
+}

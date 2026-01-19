@@ -13,11 +13,20 @@ date_default_timezone_set('Asia/Colombo');
 // Auto-detect environment based on hostname
 $is_production = (isset($_SERVER['HTTP_HOST']) && $_SERVER['HTTP_HOST'] !== 'localhost' && $_SERVER['HTTP_HOST'] !== '127.0.0.1');
 
-// Database Configuration - Preferred from .env
-$host = $_ENV['DB_HOST'] ?? 'localhost';
-$db   = $_ENV['DB_NAME'] ?? 'eco-connect';
-$user = $_ENV['DB_USER'] ?? 'root';
-$pass = $_ENV['DB_PASS'] ?? '';
+// Database Configuration
+if ($is_production) {
+    // InfinityFree Production Credentials
+    $host = 'sql300.infinityfree.com';
+    $user = 'if0_40760324';
+    $pass = 'audiveron108716';
+    $db   = 'if0_40760324_ecoconnect'; // <-- Change 'ecoconnect' if your DB name is different
+} else {
+    // Localhost Development Credentials
+    $host = $_ENV['DB_HOST'] ?? 'localhost';
+    $db   = $_ENV['DB_NAME'] ?? 'eco-connect';
+    $user = $_ENV['DB_USER'] ?? 'root';
+    $pass = $_ENV['DB_PASS'] ?? '';
+}
 
 // Define Base URL for assets
 if ($is_production) {

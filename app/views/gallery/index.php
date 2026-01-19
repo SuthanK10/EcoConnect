@@ -151,6 +151,14 @@
         
         <form action="index.php?route=gallery_store" method="post" enctype="multipart/form-data" class="p-8 space-y-6">
             <?php echo csrf_field(); ?>
+            <input type="hidden" name="project_id" value="<?php echo $project_id; ?>">
+            
+            <?php if ($project_title): ?>
+                <div class="px-4 py-2 rounded-xl bg-primary/10 border border-primary/20 text-primary text-[10px] font-black uppercase tracking-widest flex items-center gap-2 mb-4">
+                    <i data-lucide="leaf" class="w-3.5 h-3.5"></i> Posting for Event: <?php echo h($project_title); ?>
+                </div>
+            <?php endif; ?>
+
             <div>
                 <label class="block text-xs font-black text-[#121613] dark:text-white/60 uppercase tracking-[0.2em] mb-3">What's the update?</label>
                 <textarea name="content" rows="4" required placeholder="Tell the community about what you achieved..." 
@@ -176,3 +184,11 @@
         </form>
     </div>
 </div>
+
+<?php if ($project_id): ?>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        document.getElementById('uploadModal').classList.remove('hidden');
+    });
+</script>
+<?php endif; ?>

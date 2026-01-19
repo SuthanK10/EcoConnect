@@ -14,7 +14,8 @@ function va_create(PDO $pdo, int $user_id, int $project_id) {
 
 function va_list_for_user(PDO $pdo, int $user_id) {
     $stmt = $pdo->prepare("
-        SELECT va.*, p.title, p.location, p.event_date, p.start_time, p.end_time, p.description, n.name as ngo_name
+        SELECT va.*, p.title, p.location, p.event_date, p.start_time, p.end_time, p.description, n.name as ngo_name,
+               (SELECT id FROM feedback WHERE user_id = va.user_id AND project_id = va.project_id LIMIT 1) as feedback_id
         FROM volunteer_applications va
         JOIN projects p ON va.project_id = p.id
         JOIN ngos n ON p.ngo_id = n.id

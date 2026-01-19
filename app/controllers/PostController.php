@@ -17,6 +17,14 @@ function gallery_index(PDO $pdo) {
     // For the modal/upload part
     $user_id = $_SESSION['user_id'] ?? null;
     $role = $_SESSION['role'] ?? null;
+    $project_id = isset($_GET['project_id']) ? (int)$_GET['project_id'] : null;
+    $project_title = null;
+
+    if ($project_id) {
+        $stmt = $pdo->prepare("SELECT title FROM projects WHERE id = ?");
+        $stmt->execute([$project_id]);
+        $project_title = $stmt->fetchColumn();
+    }
     
     $pageTitle = 'Eco-Action Feed';
     include __DIR__ . '/../views/layouts/header.php';

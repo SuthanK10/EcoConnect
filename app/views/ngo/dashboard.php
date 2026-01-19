@@ -33,6 +33,9 @@
         Manage Profile <i data-lucide="settings" class="w-4 h-4 text-primary dark:text-[#4ade80]"></i>
       </a>
       <?php if ($ngo['status'] === 'approved'): ?>
+        <a href="index.php?route=ngo_feedback" class="min-h-[48px] px-6 py-3 rounded-2xl bg-[#ebefec] dark:bg-white/5 flex items-center justify-center text-center text-sm font-black text-[#121613] dark:text-white hover:shadow-lg transition-all active:scale-95 gap-2">
+          Review Feedback <i data-lucide="message-circle" class="w-4 h-4 text-primary dark:text-[#4ade80]"></i>
+        </a>
         <a href="index.php?route=ngo_proposals" class="min-h-[48px] px-6 py-3 rounded-2xl bg-[#ebefec] dark:bg-white/5 flex items-center justify-center text-center text-sm font-black text-[#121613] dark:text-white hover:shadow-lg transition-all active:scale-95 gap-2">
           Adopt Community Ideas <i data-lucide="lightbulb" class="w-4 h-4 text-primary dark:text-[#4ade80]"></i>
         </a>

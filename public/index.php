@@ -175,6 +175,11 @@ switch ($route) {
         ngo_adopt_proposal($pdo);
         break;
 
+    case 'ngo_feedback':
+        require_once __DIR__ . '/../app/controllers/NGOController.php';
+        ngo_feedback($pdo);
+        break;
+
     /* =========================
        ATTENDANCE (QR)
     ========================= */
