@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/../config.php';
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
@@ -11,17 +12,17 @@ function send_password_reset_email(string $toEmail, string $resetLink): bool
     $mail = new PHPMailer(true);
 
     try {
-        // SMTP configuration (Gmail example)
+        // SMTP configuration
         $mail->isSMTP();
-        $mail->Host       = 'smtp.gmail.com';
+        $mail->Host       = $_ENV['MAIL_HOST'] ?? 'smtp.gmail.com';
         $mail->SMTPAuth   = true;
-        $mail->Username   = 'toplaygames108@gmail.com';   
-        $mail->Password   = 'xcqzbhzmgelptohc';     
-        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-        $mail->Port       = 587;
+        $mail->Username   = $_ENV['MAIL_USERNAME'] ?? '';
+        $mail->Password   = $_ENV['MAIL_PASSWORD'] ?? '';
+        $mail->SMTPSecure = ($_ENV['MAIL_ENCRYPTION'] === 'tls') ? PHPMailer::ENCRYPTION_STARTTLS : PHPMailer::ENCRYPTION_SMTPS;
+        $mail->Port       = $_ENV['MAIL_PORT'] ?? 587;
 
         // Email details
-        $mail->setFrom('yourgmail@gmail.com', 'EcoConnect');
+        $mail->setFrom($_ENV['MAIL_FROM_ADDRESS'] ?? 'support@ecoconnect.lk', $_ENV['MAIL_FROM_NAME'] ?? 'EcoConnect');
         $mail->addAddress($toEmail);
 
         $mail->isHTML(true);

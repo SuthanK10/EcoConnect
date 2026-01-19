@@ -1,5 +1,6 @@
 <?php
 // app/maintenance/user_reengagement.php
+require_once __DIR__ . '/../config.php';
 
 require_once __DIR__ . '/../../vendor/autoload.php';
 require_once __DIR__ . '/../helpers/MailHelper.php';
@@ -72,15 +73,15 @@ function send_reengagement_email(array $user, array $drives): bool {
 
     try {
         $mail->isSMTP();
-        $mail->CharSet    = 'UTF-8'; // Fix for emojis
-        $mail->Host       = 'smtp.gmail.com';
+        $mail->CharSet    = 'UTF-8';
+        $mail->Host       = $_ENV['MAIL_HOST'] ?? 'smtp.gmail.com';
         $mail->SMTPAuth   = true;
-        $mail->Username   = 'toplaygames108@gmail.com';   
-        $mail->Password   = 'xcqzbhzmgelptohc';     
-        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-        $mail->Port       = 587;
+        $mail->Username   = $_ENV['MAIL_USERNAME'] ?? '';
+        $mail->Password   = $_ENV['MAIL_PASSWORD'] ?? '';
+        $mail->SMTPSecure = ($_ENV['MAIL_ENCRYPTION'] === 'tls') ? PHPMailer::ENCRYPTION_STARTTLS : PHPMailer::ENCRYPTION_SMTPS;
+        $mail->Port       = $_ENV['MAIL_PORT'] ?? 587;
 
-        $mail->setFrom('support@ecoconnect.lk', 'EcoConnect');
+        $mail->setFrom($_ENV['MAIL_FROM_ADDRESS'] ?? 'support@ecoconnect.lk', $_ENV['MAIL_FROM_NAME'] ?? 'EcoConnect');
         $mail->addAddress($user['email'], $user['name']);
 
         $mail->isHTML(true);
