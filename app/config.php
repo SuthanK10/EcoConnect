@@ -1,23 +1,23 @@
 <?php
 // app/config.php
+require_once __DIR__ . '/../vendor/autoload.php';
+
+// Load .env file
+if (file_exists(__DIR__ . '/../.env')) {
+    $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../');
+    $dotenv->load();
+}
+
 date_default_timezone_set('Asia/Colombo');
-// Database Configuration
+
 // Auto-detect environment based on hostname
 $is_production = (isset($_SERVER['HTTP_HOST']) && $_SERVER['HTTP_HOST'] !== 'localhost' && $_SERVER['HTTP_HOST'] !== '127.0.0.1');
 
-if ($is_production) {
-    // INFINITYFREE SETTINGS
-    $host = 'sql300.infinityfree.com';
-    $db   = 'if0_40760324_ecoconnect';
-    $user = 'if0_40760324';
-    $pass = 'YOUR_DB_PASSWORD'; 
-} else {
-    // LOCAL XAMPP SETTINGS
-    $host = 'localhost';
-    $db   = 'eco-connect';
-    $user = 'root';
-    $pass = '';
-}
+// Database Configuration - Preferred from .env
+$host = $_ENV['DB_HOST'] ?? 'localhost';
+$db   = $_ENV['DB_NAME'] ?? 'eco-connect';
+$user = $_ENV['DB_USER'] ?? 'root';
+$pass = $_ENV['DB_PASS'] ?? '';
 
 // Define Base URL for assets
 if ($is_production) {
@@ -56,6 +56,6 @@ if (isset($_SESSION['user_id'])) {
     $stmt->execute([$_SESSION['user_id']]);
 }
 
-// Stripe Configuration (Test Mode)
-define('STRIPE_PUBLISHABLE_KEY', 'pk_test_51SjLln2Esa203BLZdMhrmoOah2sfNXnVoKvhl5zPOEDEwXqDEnPLDq54jzeNWcAR98qyeofdaMIfXXqYOeMmmGqk00IHchUYg9');
-define('STRIPE_SECRET_KEY', 'YOUR_STRIPE_SECRET_KEY');
+// Stripe Configuration
+define('STRIPE_PUBLISHABLE_KEY', $_ENV['STRIPE_PUBLISHABLE_KEY'] ?? '');
+define('STRIPE_SECRET_KEY', $_ENV['STRIPE_SECRET_KEY'] ?? '');
