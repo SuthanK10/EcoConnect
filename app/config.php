@@ -11,7 +11,8 @@ if (file_exists(__DIR__ . '/../.env')) {
 date_default_timezone_set('Asia/Colombo');
 
 // Auto-detect environment
-$is_localhost_url = (isset($_SERVER['HTTP_HOST']) && ($_SERVER['HTTP_HOST'] === 'localhost' || $_SERVER['HTTP_HOST'] === '127.0.0.1'));
+$host_name = strtok($_SERVER['HTTP_HOST'] ?? '', ':');
+$is_localhost_url = ($host_name === 'localhost' || $host_name === '127.0.0.1');
 $app_env = $_ENV['APP_ENV'] ?? $_SERVER['APP_ENV'] ?? ($is_localhost_url ? 'local' : 'production');
 $is_production = ($app_env === 'production');
 
