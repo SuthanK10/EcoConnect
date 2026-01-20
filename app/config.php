@@ -10,16 +10,17 @@ if (file_exists(__DIR__ . '/../.env')) {
 
 date_default_timezone_set('Asia/Colombo');
 
-// Auto-detect environment based on hostname
-$is_production = (isset($_SERVER['HTTP_HOST']) && $_SERVER['HTTP_HOST'] !== 'localhost' && $_SERVER['HTTP_HOST'] !== '127.0.0.1');
+// Auto-detect environment
+$app_env = $_ENV['APP_ENV'] ?? 'production';
+$is_production = ($app_env === 'production');
 
 // Database Configuration
 if ($is_production) {
-    // InfinityFree Production Credentials
-    $host = 'sql300.infinityfree.com';
-    $user = 'if0_40760324';
-    $pass = 'audiveron108716';
-    $db   = 'if0_40760324_ecoconnect'; // <-- Change 'ecoconnect' if your DB name is different
+    // Production Credentials from .env
+    $host = $_ENV['PROD_DB_HOST'] ?? 'sql300.infinityfree.com';
+    $user = $_ENV['PROD_DB_USER'] ?? '';
+    $pass = $_ENV['PROD_DB_PASS'] ?? '';
+    $db   = $_ENV['PROD_DB_NAME'] ?? '';
 } else {
     // Localhost Development Credentials
     $host = $_ENV['DB_HOST'] ?? 'localhost';
