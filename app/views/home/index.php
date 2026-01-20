@@ -183,13 +183,18 @@ $loggedIn = !empty($_SESSION['user_id'] ?? null);
                <!-- Post 1 (Top) -->
                <?php 
                $post1 = $recentPosts[0] ?? null;
-               $img1 = $post1 ? h($post1['media_path']) : 'assets/hero1.webp';
+               $img1 = (!empty($post1['media_path'])) ? h($post1['media_path']) : 'assets/hero1.webp';
+               $type1 = $post1['media_type'] ?? 'image';
                $name1 = $post1 ? ($post1['user_name'] ?? $post1['ngo_name'] ?? 'Volunteer') : 'Eco-Warrior';
                $initial1 = strtoupper(substr($name1, 0, 1));
                ?>
                <div class="bg-white/10 backdrop-blur-xl border border-white/20 p-5 rounded-[32px] shadow-2xl transform rotate-3 relative z-20 group-hover:rotate-0 transition-transform duration-700">
                   <div class="aspect-square rounded-2xl overflow-hidden mb-4 bg-slate-800">
-                     <img src="<?php echo $img1; ?>" class="w-full h-full object-cover opacity-90" alt="Action">
+                     <?php if ($type1 === 'video'): ?>
+                        <video src="<?php echo $img1; ?>" class="w-full h-full object-cover opacity-90" muted autoplay loop></video>
+                     <?php else: ?>
+                        <img src="<?php echo $img1; ?>" class="w-full h-full object-cover opacity-90" alt="Action">
+                     <?php endif; ?>
                   </div>
                   <div class="flex items-center gap-3">
                      <div class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-[10px] font-black"><?php echo $initial1; ?></div>
@@ -203,12 +208,19 @@ $loggedIn = !empty($_SESSION['user_id'] ?? null);
                <!-- Post 2 (Bottom) -->
                <?php 
                $post2 = $recentPosts[1] ?? null;
-               if ($post2 || !$post1): // Show if we have a second post, or if we have none (to show fallbacks)
-                  $img2 = $post2 ? h($post2['media_path']) : 'assets/hero.jpg';
+               if ($post2 || !$post1): 
                ?>
                <div class="absolute -bottom-10 -left-10 w-2/3 bg-white/10 backdrop-blur-xl border border-white/20 p-4 rounded-[28px] shadow-2xl -rotate-6 z-10 hidden md:block group-hover:rotate-0 transition-transform duration-700">
                   <div class="aspect-[4/3] rounded-xl overflow-hidden mb-3 bg-slate-800">
-                     <img src="<?php echo $img2; ?>" class="w-full h-full object-cover opacity-80" alt="Action 2">
+                     <?php 
+                     $img2 = (!empty($post2['media_path'])) ? h($post2['media_path']) : 'assets/hero.jpg';
+                     $type2 = $post2['media_type'] ?? 'image';
+                     if ($type2 === 'video'):
+                     ?>
+                        <video src="<?php echo $img2; ?>" class="w-full h-full object-cover opacity-80" muted autoplay loop></video>
+                     <?php else: ?>
+                        <img src="<?php echo $img2; ?>" class="w-full h-full object-cover opacity-80" alt="Action 2">
+                     <?php endif; ?>
                   </div>
                   <div class="h-1.5 w-full bg-white/10 rounded-full"></div>
                </div>

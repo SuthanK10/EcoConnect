@@ -44,7 +44,9 @@ function post_list_approved_limited(PDO $pdo, int $limit) {
     $stmt = $pdo->prepare("
         SELECT p.*, 
                u.name as user_name, u.role as user_role,
-               n.name as ngo_name
+               n.name as ngo_name,
+               (SELECT media_path FROM community_post_media WHERE post_id = p.id LIMIT 1) as media_path,
+               (SELECT media_type FROM community_post_media WHERE post_id = p.id LIMIT 1) as media_type
         FROM community_posts p
         LEFT JOIN users u ON p.user_id = u.id
         LEFT JOIN ngos n ON p.ngo_id = n.id
