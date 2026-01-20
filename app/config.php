@@ -18,10 +18,10 @@ $is_production = ($app_env === 'production');
 // Database Configuration
 if ($is_production) {
     // Production Credentials
-    $host = trim($_ENV['PROD_DB_HOST'] ?? $_SERVER['PROD_DB_HOST'] ?? 'sql300.infinityfree.com');
-    $user = trim($_ENV['PROD_DB_USER'] ?? $_SERVER['PROD_DB_USER'] ?? 'if0_40760324');
-    $pass = trim($_ENV['PROD_DB_PASS'] ?? $_SERVER['PROD_DB_PASS'] ?? 'audiveron108716');
-    $db   = trim($_ENV['PROD_DB_NAME'] ?? $_SERVER['PROD_DB_NAME'] ?? 'if0_40760324_ecoconnect');
+    $host = trim($_ENV['PROD_DB_HOST'] ?: $_SERVER['PROD_DB_HOST'] ?: 'sql300.infinityfree.com');
+    $user = trim($_ENV['PROD_DB_USER'] ?: $_SERVER['PROD_DB_USER'] ?: 'if0_40760324');
+    $pass = trim($_ENV['PROD_DB_PASS'] ?: $_SERVER['PROD_DB_PASS'] ?: 'audiveron108716');
+    $db   = trim($_ENV['PROD_DB_NAME'] ?: $_SERVER['PROD_DB_NAME'] ?: 'if0_40760324_ecoconnect');
 } else {
     // Localhost Development Credentials (XAMPP usually works best with localhost or 127.0.0.1)
     $host = trim($_ENV['DB_HOST'] ?? $_SERVER['DB_HOST'] ?? 'localhost');
