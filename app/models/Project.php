@@ -319,11 +319,11 @@ function project_create_with_image(
 }
 
 /**
- * Find nearby open projects based on coordinates
+ * Find nearby open projects based on coordinates, optionally excluding projects the user has already joined
  */
-function project_find_nearby(PDO $pdo, float $lat, float $lng, float $radius_km = 5.0)
+function project_find_nearby(PDO $pdo, float $lat, float $lng, float $radius_km = 5.0, ?int $exclude_user_id = null)
 {
-    $stmt = $pdo->prepare("
+    $sql = "
         SELECT 
             p.*, 
             n.name AS ngo_name,
@@ -340,14 +340,23 @@ function project_find_nearby(PDO $pdo, float $lat, float $lng, float $radius_km 
           AND (p.event_date > CURRENT_DATE OR (p.event_date = CURRENT_DATE AND (p.end_time IS NULL OR p.end_time >= CURRENT_TIME)))
           AND p.latitude IS NOT NULL
           AND p.longitude IS NOT NULL
-        HAVING distance <= :radius
-        ORDER BY distance ASC
-        LIMIT 5
-    ");
+    ";
 
+    if ($exclude_user_id !== null) {
+        $sql .= " AND p.id NOT IN (SELECT project_id FROM volunteer_applications WHERE user_id = :user_id)";
+    }
+
+    $sql .= " HAVING distance <= :radius
+        ORDER BY distance ASC
+        LIMIT 5";
+
+    $stmt = $pdo->prepare($sql);
     $stmt->bindValue(':lat', $lat);
     $stmt->bindValue(':lng', $lng);
     $stmt->bindValue(':radius', $radius_km);
+    if ($exclude_user_id !== null) {
+        $stmt->bindValue(':user_id', $exclude_user_id, PDO::PARAM_INT);
+    }
     $stmt->execute();
 
     return $stmt->fetchAll(PDO::FETCH_ASSOC);

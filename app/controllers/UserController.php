@@ -55,11 +55,11 @@ function user_dashboard(PDO $pdo)
     // null  -> Unranked
     // 1..n  -> Ranked position
 
-    // Fetch nearby projects if user has coordinates
+    // Fetch nearby projects if user has coordinates (exclude already joined)
     $nearbyProjects = [];
     if (!empty($user['latitude']) && !empty($user['longitude'])) {
         require_once __DIR__ . '/../models/Project.php';
-        $nearbyProjects = project_find_nearby($pdo, (float)$user['latitude'], (float)$user['longitude']);
+        $nearbyProjects = project_find_nearby($pdo, (float)$user['latitude'], (float)$user['longitude'], 5.0, $user_id);
     }
 
     // Category-based suggestions

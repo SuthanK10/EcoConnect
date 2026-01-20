@@ -67,7 +67,7 @@ function events_show(PDO $pdo) {
         } elseif ($project['status'] !== 'open' && !$is_owner && !$is_admin) {
              $_SESSION['flash_error'] = 'Comments are disabled for this event.';
         } else {
-            $comment_text = trim($_POST['comment_text'] ?? '');
+            $comment_text = sanitize($_POST['comment_text'] ?? '');
             if ($comment_text !== '') {
                 // Stored XSS: We encode on output in the view, but let's be safe
                 comment_create($pdo, $id, (int)$_SESSION['user_id'], $comment_text);

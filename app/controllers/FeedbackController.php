@@ -44,7 +44,7 @@ function feedback_submit(PDO $pdo) {
     $project_id = $_POST['project_id'] ?? 0;
     $event_rating = $_POST['event_rating'] ?? 0;
     $ngo_helpfulness = $_POST['ngo_helpfulness'] ?? 0;
-    $comments = $_POST['comments'] ?? '';
+    $comments = sanitize($_POST['comments'] ?? '');
 
     // Simple validation
     if (!$project_id || !$event_rating || !$ngo_helpfulness) {

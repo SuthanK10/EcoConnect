@@ -77,7 +77,7 @@ function message_send(PDO $pdo) {
 
     $sender_id = (int)$_SESSION['user_id'];
     $receiver_id = (int)$_POST['receiver_id'];
-    $content = trim($_POST['message']);
+    $content = sanitize($_POST['message'] ?? '');
 
     if ($content !== '') {
         $stmt = $pdo->prepare("INSERT INTO messages (sender_id, receiver_id, message) VALUES (?, ?, ?)");

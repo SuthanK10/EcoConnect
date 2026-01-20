@@ -11,13 +11,34 @@ function csrf_field() {
 }
 
 /**
+ * Censor vulgar words
+ */
+function censor($text) {
+    if (empty($text)) return $text;
+
+    $badWords = [
+        'fuck', 'shit', 'piss', 'cunt', 'faggot', 'nigger', 'bitch', 'asshole',
+        'dick', 'pussy', 'bastard', 'slut', 'whore', 'bastard'
+    ];
+
+    foreach ($badWords as $word) {
+        $replacement = str_repeat('*', strlen($word));
+        // Case-insensitive replacement with word boundaries
+        $text = preg_replace('/\b' . preg_quote($word, '/') . '\b/i', $replacement, $text);
+    }
+
+    return $text;
+}
+
+/**
  * Sanitize input for storage (Normalization)
  */
 function sanitize($str) {
     if ($str === null) return '';
     // Strip tags to prevent stored HTML
     // We can allow some basic formatting if needed, but for now let's be strict
-    return strip_tags(trim($str));
+    $clean = strip_tags(trim($str));
+    return censor($clean);
 }
 
 function is_logged_in() {
