@@ -6,7 +6,7 @@ test.describe('Admin Master Workflows', () => {
         // 1. Login as Admin first
         await page.goto('index.php?route=login');
         await page.fill('input[name="email"]', 'admin@gmail.com');
-        await page.fill('input[name="password"]', 'Password123!');
+        await page.fill('input[name="password"]', 'admin123');
         await page.click('button[type="submit"]');
 
         // Wait for server processing

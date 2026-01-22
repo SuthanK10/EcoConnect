@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 20, 2026 at 06:23 PM
+-- Generation Time: Jan 20, 2026 at 07:24 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -276,6 +276,13 @@ CREATE TABLE `login_attempts` (
   `attempts` int(11) NOT NULL DEFAULT 1,
   `last_attempt` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `login_attempts`
+--
+
+INSERT INTO `login_attempts` (`ip_address`, `attempts`, `last_attempt`) VALUES
+('::1', 1, '2026-01-20 17:55:11');
 
 -- --------------------------------------------------------
 

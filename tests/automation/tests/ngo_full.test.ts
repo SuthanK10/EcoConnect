@@ -5,7 +5,7 @@ test.describe('NGO Workflows', () => {
     test.beforeEach(async ({ page }) => {
         await page.goto('index.php?route=login');
         await page.fill('input[name="email"]', 'chelsea@gmail.com');
-        await page.fill('input[name="password"]', 'Password123!');
+        await page.fill('input[name="password"]', 'chelsea123');
         await page.click('button[type="submit"]');
 
         await page.waitForLoadState('networkidle');

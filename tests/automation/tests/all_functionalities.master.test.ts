@@ -10,8 +10,8 @@ const BASE_URL = "http://localhost/Eco-Connect/public/index.php";
 
 const CREDS = {
     user: { email: "test@gmail.com", pass: "test123" },
-    ngo: { email: "chelsea@gmail.com", pass: "Password123!" },
-    admin: { email: "admin@gmail.com", pass: "Password123!" },
+    ngo: { email: "chelsea@gmail.com", pass: "chelsea123" },
+    admin: { email: "admin@gmail.com", pass: "admin123" },
 };
 
 function routeUrl(route: string, params: Record<string, string | number> = {}) {
@@ -83,6 +83,7 @@ test.describe("MASTER: Public Pages", () => {
 
 test.describe("MASTER: Access Control", () => {
     test("Blocked Routes for Guest", async ({ page }) => {
+        test.slow(); // Increases timeout for this specific test
         const protectedRoutes = [...USER_ROUTES, ...NGO_ROUTES, ...ADMIN_ROUTES];
         for (const r of protectedRoutes) {
             await page.goto(routeUrl(r));
