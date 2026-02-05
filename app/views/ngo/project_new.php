@@ -63,14 +63,14 @@ $proposalData = $_SESSION['adopting_proposal_data'] ?? null;
 
         <div>
             <label class="block text-xs font-black text-[#121613] dark:text-white uppercase tracking-[0.2em] mb-3">Drive Category</label>
-            <select name="category" required class="w-full px-6 py-4 rounded-2xl bg-[#f0f5f1] dark:bg-white/5 border-none focus:ring-2 focus:ring-[#2c4931] dark:focus:ring-[#4ade80] font-bold text-[#121613] dark:text-white transition-all cursor-pointer">
-                <option value="Beach & Coastal Cleanups">Beach & Coastal Cleanups</option>
-                <option value="Waterway & Wetland Cleanups">Waterway & Wetland Cleanups</option>
-                <option value="Park & Forest Cleanups">Park & Forest Cleanups</option>
-                <option value="Urban & Street Cleanups">Urban & Street Cleanups</option>
-                <option value="Underwater/Dive Cleanups">Underwater/Dive Cleanups</option>
-                <option value="Tree Planting & Reforestation">Tree Planting & Reforestation</option>
-                <option value="General Cleanup" selected>General Cleanup</option>
+            <select name="category" required class="w-full px-6 py-4 rounded-2xl bg-[#f0f5f1] dark:bg-[#1e293b] border-none focus:ring-2 focus:ring-[#2c4931] dark:focus:ring-[#4ade80] font-bold text-[#121613] dark:text-white transition-all cursor-pointer">
+                <option value="Beach & Coastal Cleanups" class="dark:bg-[#1e293b] dark:text-white">Beach & Coastal Cleanups</option>
+                <option value="Waterway & Wetland Cleanups" class="dark:bg-[#1e293b] dark:text-white">Waterway & Wetland Cleanups</option>
+                <option value="Park & Forest Cleanups" class="dark:bg-[#1e293b] dark:text-white">Park & Forest Cleanups</option>
+                <option value="Urban & Street Cleanups" class="dark:bg-[#1e293b] dark:text-white">Urban & Street Cleanups</option>
+                <option value="Underwater/Dive Cleanups" class="dark:bg-[#1e293b] dark:text-white">Underwater/Dive Cleanups</option>
+                <option value="Tree Planting & Reforestation" class="dark:bg-[#1e293b] dark:text-white">Tree Planting & Reforestation</option>
+                <option value="General Cleanup" selected class="dark:bg-[#1e293b] dark:text-white">General Cleanup</option>
             </select>
         </div>
 
