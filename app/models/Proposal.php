@@ -46,4 +46,9 @@ function proposal_update_status(PDO $pdo, int $id, string $status) {
     $stmt = $pdo->prepare("UPDATE community_proposals SET status = ? WHERE id = ?");
     return $stmt->execute([$status, $id]);
 }
+
+function proposal_delete(PDO $pdo, int $id) {
+    $stmt = $pdo->prepare("DELETE FROM community_proposals WHERE id = ?");
+    return $stmt->execute([$id]);
+}
 ?>

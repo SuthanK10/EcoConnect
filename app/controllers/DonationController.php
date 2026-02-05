@@ -3,6 +3,7 @@
 
 require_once __DIR__ . '/../config.php';
 require_once __DIR__ . '/../helpers.php';
+require_once __DIR__ . '/../models/User.php';
 
 function donation_index(PDO $pdo)
 {
@@ -17,7 +18,8 @@ function donation_index(PDO $pdo)
             try {
                 \Stripe\Stripe::setApiKey(STRIPE_SECRET_KEY);
 
-                $checkout_session = \Stripe\Checkout\Session::create([
+                // Prepare Stripe session parameters
+                $sessionParams = [
                     'payment_method_types' => ['card'],
                     'line_items' => [[
                         'price_data' => [
@@ -34,10 +36,20 @@ function donation_index(PDO $pdo)
                     'mode' => 'payment',
                     'success_url' => BASE_URL . '/public/index.php?route=donation_success&session_id={CHECKOUT_SESSION_ID}',
                     'cancel_url' => BASE_URL . '/public/index.php?route=donations',
-                ]);
+                ];
+
+                // If user is logged in, pre-fill their email
+                $user_id = $_SESSION['user_id'] ?? null;
+                if ($user_id) {
+                    $user = user_find_by_id($pdo, $user_id);
+                    if ($user && !empty($user['email'])) {
+                        $sessionParams['customer_email'] = $user['email'];
+                    }
+                }
+
+                $checkout_session = \Stripe\Checkout\Session::create($sessionParams);
 
                 // Store pending donation in DB
-                $user_id = $_SESSION['user_id'] ?? null;
                 $stmt = $pdo->prepare("INSERT INTO donations (user_id, amount, stripe_session_id, status) VALUES (?, ?, ?, 'pending')");
                 $stmt->execute([$user_id, $amount, $checkout_session->id]);
 

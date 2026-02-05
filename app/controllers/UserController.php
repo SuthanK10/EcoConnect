@@ -189,11 +189,18 @@ function user_propose_cleanup(PDO $pdo)
         if ($title === '' || $location === '' || $date === '') {
             $error = 'Please fill in required fields (Title, Location, Date).';
         } else {
-            if (proposal_create($pdo, $user_id, $title, $description, $location, $lat, $lng, $date)) {
-                $_SESSION['flash_success'] = "Thank you! Your cleanup proposal has been submitted for review.";
-                redirect('user_my_proposals');
+            // Check for duplicate submission (same user, same title, same date)
+            $stmt = $pdo->prepare("SELECT id FROM community_proposals WHERE user_id = ? AND title = ? AND proposed_date = ?");
+            $stmt->execute([$user_id, $title, $date]);
+            if ($stmt->fetch()) {
+                $error = 'You have already submitted this proposal.';
             } else {
-                $error = 'Failed to submit proposal. Please try again.';
+                if (proposal_create($pdo, $user_id, $title, $description, $location, $lat, $lng, $date)) {
+                    $_SESSION['flash_success'] = "Thank you! Your cleanup proposal has been submitted for review.";
+                    redirect('user_my_proposals');
+                } else {
+                    $error = 'Failed to submit proposal. Please try again.';
+                }
             }
         }
     }
@@ -219,4 +226,30 @@ function user_my_proposals(PDO $pdo)
     include __DIR__ . '/../views/layouts/header.php';
     include __DIR__ . '/../views/user/my_proposals.php';
     include __DIR__ . '/../views/layouts/footer.php';
+}
+
+function user_delete_proposal(PDO $pdo)
+{
+    require_login('user');
+    require_once __DIR__ . '/../models/Proposal.php';
+
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $proposal_id = (int)($_POST['proposal_id'] ?? 0);
+        $user_id = (int)$_SESSION['user_id'];
+
+        // Verify ownership and status (only pending can be deleted)
+        $proposal = proposal_find_by_id($pdo, $proposal_id);
+
+        if ($proposal && (int)$proposal['user_id'] === $user_id && $proposal['status'] === 'pending') {
+            if (proposal_delete($pdo, $proposal_id)) {
+                $_SESSION['flash_success'] = 'Proposal deleted successfully.';
+            } else {
+                $_SESSION['flash_error'] = 'Failed to delete proposal.';
+            }
+        } else {
+            $_SESSION['flash_error'] = 'Invalid proposal or cannot delete approved/rejected proposals.';
+        }
+    }
+    
+    redirect('user_my_proposals');
 }

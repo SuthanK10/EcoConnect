@@ -59,17 +59,7 @@
             </div>
         </div>
 
-        <!-- NGO Helpfulness -->
-        <div>
-            <label class="block text-sm font-700 text-[#121613] mb-3">Were the NGO organizers helpful?</label>
-            <div class="star-rating gap-1">
-                <input type="radio" id="n5" name="ngo_helpfulness" value="5" required /><label for="n5"><i data-lucide="star" class="w-8 h-8"></i></label>
-                <input type="radio" id="n4" name="ngo_helpfulness" value="4" /><label for="n4"><i data-lucide="star" class="w-8 h-8"></i></label>
-                <input type="radio" id="n3" name="ngo_helpfulness" value="3" /><label for="n3"><i data-lucide="star" class="w-8 h-8"></i></label>
-                <input type="radio" id="n2" name="ngo_helpfulness" value="2" /><label for="n2"><i data-lucide="star" class="w-8 h-8"></i></label>
-                <input type="radio" id="n1" name="ngo_helpfulness" value="1" /><label for="n1"><i data-lucide="star" class="w-8 h-8"></i></label>
-            </div>
-        </div>
+
 
         <!-- Comments -->
         <div>

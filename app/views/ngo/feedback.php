@@ -53,14 +53,7 @@
                                             <?php endfor; ?>
                                         </div>
                                     </div>
-                                    <div class="flex flex-col gap-1">
-                                        <span class="text-[10px] font-black text-primary uppercase tracking-widest">NGO Helpfulness</span>
-                                        <div class="flex text-green-500">
-                                            <?php for($i=1; $i<=5; $i++): ?>
-                                                <i data-lucide="award" class="w-4 h-4 <?php echo $i <= $f['ngo_helpfulness'] ? 'fill-current' : ''; ?>"></i>
-                                            <?php endfor; ?>
-                                        </div>
-                                    </div>
+
                                 </div>
 
                                 <div class="bg-gray-50 dark:bg-white/5 rounded-2xl p-6 italic text-[#121613] dark:text-gray-200">

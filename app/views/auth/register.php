@@ -140,11 +140,11 @@
               <div class="grid grid-cols-2 gap-4">
                 <div>
                   <label class="block text-[10px] font-black text-[#121613] dark:text-white uppercase tracking-widest mb-2">Latitude</label>
-                  <input type="text" name="latitude" id="lat" value="<?php echo h($_POST['latitude'] ?? ''); ?>" placeholder="6.1234" class="block w-full px-5 py-4 rounded-2xl border-2 border-gray-100 dark:border-white/5 bg-gray-50 dark:bg-darkBg text-[#121613] dark:text-white focus:ring-4 focus:ring-[#2c4931]/10 focus:border-[#2c4931] transition-all outline-none font-medium">
+                  <input type="number" step="any" name="latitude" id="lat" value="<?php echo h($_POST['latitude'] ?? ''); ?>" placeholder="6.1234" class="block w-full px-5 py-4 rounded-2xl border-2 border-gray-100 dark:border-white/5 bg-gray-50 dark:bg-darkBg text-[#121613] dark:text-white focus:ring-4 focus:ring-[#2c4931]/10 focus:border-[#2c4931] transition-all outline-none font-medium">
                 </div>
                 <div>
                   <label class="block text-[10px] font-black text-[#121613] dark:text-white uppercase tracking-widest mb-2">Longitude</label>
-                  <input type="text" name="longitude" id="lng" value="<?php echo h($_POST['longitude'] ?? ''); ?>" placeholder="80.1234" class="block w-full px-5 py-4 rounded-2xl border-2 border-gray-100 dark:border-white/5 bg-gray-50 dark:bg-darkBg text-[#121613] dark:text-white focus:ring-4 focus:ring-[#2c4931]/10 focus:border-[#2c4931] transition-all outline-none font-medium">
+                  <input type="number" step="any" name="longitude" id="lng" value="<?php echo h($_POST['longitude'] ?? ''); ?>" placeholder="80.1234" class="block w-full px-5 py-4 rounded-2xl border-2 border-gray-100 dark:border-white/5 bg-gray-50 dark:bg-darkBg text-[#121613] dark:text-white focus:ring-4 focus:ring-[#2c4931]/10 focus:border-[#2c4931] transition-all outline-none font-medium">
                 </div>
               </div>
               <button type="button" onclick="getLocation()" class="w-full py-4 rounded-2xl bg-white dark:bg-white/5 border-2 border-dashed border-[#2c4931]/20 dark:border-white/10 text-[#2c4931] dark:text-[#4ade80] text-xs font-black uppercase tracking-widest hover:border-[#2c4931] dark:hover:border-[#4ade80] transition-all flex items-center justify-center gap-2">

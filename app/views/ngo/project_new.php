@@ -2,6 +2,9 @@
 // app/views/ngo/project_new.php
 $proposalData = $_SESSION['adopting_proposal_data'] ?? null;
 ?>
+<!-- Leaflet Resources -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 
 <div class="max-w-4xl mx-auto px-4 py-12">
   <div class="mb-10 flex items-center justify-between">
@@ -89,18 +92,27 @@ $proposalData = $_SESSION['adopting_proposal_data'] ?? null;
             class="w-full px-6 py-4 rounded-2xl bg-[#f0f5f1] dark:bg-white/5 border-none focus:ring-2 focus:ring-[#2c4931] dark:focus:ring-[#4ade80] placeholder:text-gray-400 font-bold text-[#121613] dark:text-white transition-all">
         </div>
 
-        <div class="grid grid-cols-2 gap-4">
-            <div>
-                <label class="block text-[10px] font-black text-[#121613] dark:text-white uppercase tracking-widest mb-2">Latitude</label>
-                <input type="text" name="latitude" required placeholder="6.1234"
-                    value="<?php echo h($proposalData['latitude'] ?? ''); ?>"
-                    class="w-full px-4 py-3 rounded-xl bg-[#f0f5f1] dark:bg-white/5 border-none focus:ring-2 focus:ring-[#2c4931] dark:focus:ring-[#4ade80] text-xs font-bold text-[#121613] dark:text-white transition-all">
+        <!-- Map Location Picker -->
+        <div>
+            <label class="block text-xs font-black text-[#121613] dark:text-white uppercase tracking-[0.2em] mb-3">Pin Location on Map</label>
+            
+            <!-- Search -->
+            <div class="flex gap-2 mb-3">
+                <input type="text" id="location_search" placeholder="Search area (e.g., Colombo)..." 
+                    class="flex-1 px-4 py-2 rounded-xl bg-[#f0f5f1] dark:bg-white/5 border-none text-xs font-bold text-[#121613] dark:text-white focus:ring-2 focus:ring-[#2c4931]">
+                <button type="button" onclick="searchLocation()" class="px-4 py-2 bg-[#2c4931] dark:bg-[#4ade80] rounded-xl text-white dark:text-primary text-xs font-bold hover:bg-[#1a2e1e] transition-all">Find</button>
             </div>
-            <div>
-                <label class="block text-[10px] font-black text-[#121613] dark:text-white uppercase tracking-widest mb-2">Longitude</label>
-                <input type="text" name="longitude" required placeholder="79.1234"
-                    value="<?php echo h($proposalData['longitude'] ?? ''); ?>"
-                    class="w-full px-4 py-3 rounded-xl bg-[#f0f5f1] dark:bg-white/5 border-none focus:ring-2 focus:ring-[#2c4931] dark:focus:ring-[#4ade80] text-xs font-bold text-[#121613] dark:text-white transition-all">
+
+            <div id="map_picker" class="w-full h-[300px] rounded-2xl border border-gray-200 dark:border-white/10 z-0 relative overflow-hidden"></div>
+            
+            <input type="hidden" name="latitude" id="latitude" required value="<?php echo h($proposalData['latitude'] ?? ''); ?>">
+            <input type="hidden" name="longitude" id="longitude" required value="<?php echo h($proposalData['longitude'] ?? ''); ?>">
+            
+            <div class="mt-3 flex items-center justify-between">
+                <p class="text-[10px] bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 px-3 py-2 rounded-lg font-bold border border-blue-100 dark:border-blue-800 flex items-center gap-2">
+                    <i data-lucide="mouse-pointer-click" class="w-3 h-3"></i> Click map to pin location
+                </p>
+                <p class="text-[10px] font-mono text-gray-400" id="coords_display"></p>
             </div>
         </div>
 
@@ -180,5 +192,87 @@ document.addEventListener('DOMContentLoaded', () => {
         endInput.addEventListener('change', calculateNGOPoints);
         calculateNGOPoints();
     }
+
+    // --- MAP LOGIC ---
+    let map, marker;
+    
+    // Default: Sri Lanka Center
+    const defaultLat = 7.8731;
+    const defaultLng = 80.7718;
+    
+    // Check for existing values
+    let currentLat = parseFloat(document.getElementById('latitude').value) || defaultLat;
+    let currentLng = parseFloat(document.getElementById('longitude').value) || defaultLng;
+    let initialZoom = document.getElementById('latitude').value ? 13 : 7;
+
+    map = L.map('map_picker', { scrollWheelZoom: false }).setView([currentLat, currentLng], initialZoom);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+
+    // Helper to create the custom icon
+    function getGreenIcon() {
+        return L.divIcon({
+            html: `<div class="w-8 h-8 bg-[#2c4931] rounded-full border-4 border-white shadow-lg flex items-center justify-center text-white ring-4 ring-[#2c4931]/20"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-pin"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg></div>`,
+            className: 'bg-transparent',
+            iconSize: [32, 32],
+            iconAnchor: [16, 32]
+        });
+    }
+
+    function updateMarker(lat, lng) {
+        if (marker) {
+            marker.setLatLng([lat, lng]);
+        } else {
+            marker = L.marker([lat, lng], { icon: getGreenIcon() }).addTo(map);
+        }
+        
+        // Update fields
+        document.getElementById('latitude').value = lat;
+        document.getElementById('longitude').value = lng;
+        document.getElementById('coords_display').innerText = `${lat.toFixed(4)}, ${lng.toFixed(4)}`;
+    }
+
+    // Place initial marker if we have data
+    if (document.getElementById('latitude').value) {
+        updateMarker(currentLat, currentLng);
+    }
+
+    // Click to pin
+    map.on('click', function(e) {
+        updateMarker(e.latlng.lat, e.latlng.lng);
+    });
+    
+    // Search function exposure
+    window.searchLocation = async function() {
+        const query = document.getElementById('location_search').value;
+        if (!query) return;
+        
+        const btn = document.querySelector('button[onclick="searchLocation()"]');
+        const originalText = btn.innerText;
+        btn.innerText = '...';
+        btn.disabled = true;
+
+        try {
+            const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&countrycodes=lk`);
+            const data = await response.json();
+
+            if (data && data.length > 0) {
+                const lat = parseFloat(data[0].lat);
+                const lon = parseFloat(data[0].lon);
+                
+                map.flyTo([lat, lon], 14); // Zoom in closer
+                updateMarker(lat, lon);
+            } else {
+                alert('Location not found. Try a broader search term.');
+            }
+        } catch (e) {
+            alert('Error searching location.');
+        } finally {
+            btn.innerText = originalText;
+            btn.disabled = false;
+        }
+    };
 });
 </script>

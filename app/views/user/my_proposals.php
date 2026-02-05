@@ -5,10 +5,10 @@
 <div class="max-w-6xl mx-auto px-4 py-12">
     <div class="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div>
-            <h1 class="text-[#121613] text-4xl font-black tracking-tight mb-2 flex items-center gap-3">
+            <h1 class="text-[#121613] dark:text-white text-4xl font-black tracking-tight mb-2 flex items-center gap-3">
                 My Community Proposals <i data-lucide="mail" class="w-8 h-8 text-primary"></i>
             </h1>
-            <p class="text-[15px] text-[#677e6b] font-medium leading-relaxed">
+            <p class="text-[15px] text-[#677e6b] dark:text-gray-300 font-medium leading-relaxed">
                 Track the status of your suggested cleanup initiatives.
             </p>
         </div>
@@ -29,38 +29,50 @@
                         'converted' => ['bg' => 'bg-blue-50', 'text' => 'text-blue-600', 'icon' => '<i data-lucide="shield-check" class="w-3 h-3"></i>']
                     ][$status] ?? ['bg' => 'bg-gray-50', 'text' => 'text-gray-600', 'icon' => '<i data-lucide="help-circle" class="w-3 h-3"></i>'];
                 ?>
-                <div class="group bg-white rounded-[32px] border border-gray-100 p-8 shadow-sm hover:shadow-xl transition-all duration-300">
-                    <div class="flex items-center gap-3 mb-6">
-                        <span class="px-3 py-1 rounded-full <?php echo $statusConfig['bg']; ?> <?php echo $statusConfig['text']; ?> text-[10px] font-black uppercase tracking-widest border border-black/5 flex items-center gap-1.5">
-                            <?php echo $statusConfig['icon']; ?> <?php echo $prop['status']; ?>
-                        </span>
-                        <span class="text-[10px] font-bold text-gray-300 uppercase tracking-widest">
-                            Submitted <?php echo date('M d, Y', strtotime($prop['created_at'])); ?>
-                        </span>
+                <div class="group bg-white dark:bg-darkSurface rounded-[32px] border border-gray-100 dark:border-white/5 p-8 shadow-sm hover:shadow-xl transition-all duration-300 relative">
+                    <div class="flex items-center justify-between mb-6">
+                        <div class="flex items-center gap-3">
+                            <span class="px-3 py-1 rounded-full <?php echo $statusConfig['bg']; ?> <?php echo $statusConfig['text']; ?> text-[10px] font-black uppercase tracking-widest border border-black/5 flex items-center gap-1.5">
+                                <?php echo $statusConfig['icon']; ?> <?php echo $prop['status']; ?>
+                            </span>
+                            <span class="text-[10px] font-bold text-gray-300 dark:text-gray-500 uppercase tracking-widest">
+                                Submitted <?php echo date('M d, Y', strtotime($prop['created_at'])); ?>
+                            </span>
+                        </div>
+                        
+                        <?php if ($status === 'pending'): ?>
+                            <form action="index.php?route=user_delete_proposal" method="POST" onsubmit="return confirm('Are you sure you want to cancel this proposal?');">
+                                <?php echo csrf_field(); ?>
+                                <input type="hidden" name="proposal_id" value="<?php echo $prop['id']; ?>">
+                                <button type="submit" class="text-gray-400 hover:text-red-500 transition-colors p-2 rounded-full hover:bg-red-50 dark:hover:bg-red-900/20" title="Cancel Proposal">
+                                    <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                </button>
+                            </form>
+                        <?php endif; ?>
                     </div>
 
-                    <h3 class="text-xl font-black text-[#121613] mb-4 group-hover:text-[#2c4931] transition-colors leading-tight">
+                    <h3 class="text-xl font-black text-[#121613] dark:text-white mb-4 group-hover:text-[#2c4931] dark:group-hover:text-[#4ade80] transition-colors leading-tight">
                         <?php echo h($prop['title']); ?>
                     </h3>
 
                     <div class="space-y-3 mb-6">
-                        <div class="flex items-center gap-2 text-xs font-bold text-[#677e6b]">
-                            <span class="w-8 h-8 rounded-xl bg-[#f0f5f1] flex items-center justify-center text-primary">
+                        <div class="flex items-center gap-2 text-xs font-bold text-[#677e6b] dark:text-gray-400">
+                            <span class="w-8 h-8 rounded-xl bg-[#f0f5f1] dark:bg-white/5 flex items-center justify-center text-primary dark:text-[#4ade80]">
                                 <i data-lucide="map-pin" class="w-4 h-4"></i>
                             </span>
                             <?php echo h($prop['location']); ?>
                         </div>
-                        <div class="flex items-center gap-2 text-xs font-bold text-[#677e6b]">
-                            <span class="w-8 h-8 rounded-xl bg-[#f0f5f1] flex items-center justify-center text-primary">
+                        <div class="flex items-center gap-2 text-xs font-bold text-[#677e6b] dark:text-gray-400">
+                            <span class="w-8 h-8 rounded-xl bg-[#f0f5f1] dark:bg-white/5 flex items-center justify-center text-primary dark:text-[#4ade80]">
                                 <i data-lucide="calendar" class="w-4 h-4"></i>
                             </span>
                             Suggested for <?php echo date('M d, Y', strtotime($prop['proposed_date'])); ?>
                         </div>
                     </div>
 
-                    <div class="bg-[#f0f5f1] rounded-2xl p-6 border border-[#2c4931]/5">
-                        <p class="text-[10px] font-black text-[#2c4931] uppercase tracking-[0.2em] mb-2">Original Proposal</p>
-                        <p class="text-sm text-[#2c4931] leading-relaxed italic line-clamp-2">
+                    <div class="bg-[#f0f5f1] dark:bg-white/5 rounded-2xl p-6 border border-[#2c4931]/5 dark:border-white/10">
+                        <p class="text-[10px] font-black text-[#2c4931] dark:text-[#4ade80] uppercase tracking-[0.2em] mb-2">Original Proposal</p>
+                        <p class="text-sm text-[#2c4931] dark:text-gray-300 leading-relaxed italic line-clamp-2">
                             "<?php echo h($prop['description']); ?>"
                         </p>
                     </div>

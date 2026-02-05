@@ -111,6 +111,11 @@ switch ($route) {
         user_my_proposals($pdo);
         break;
 
+    case 'user_delete_proposal':
+        require_once __DIR__ . '/../app/controllers/UserController.php';
+        user_delete_proposal($pdo);
+        break;
+
     /* =========================
        EVENTS
     ========================= */
