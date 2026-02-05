@@ -41,23 +41,39 @@ function events_show(PDO $pdo) {
     }
 
     // Handle Application
-    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['apply'])) {
-        // 2. State validation (Server-side enforcement)
-        if ($project['status'] !== 'open' || project_is_past($project)) {
-            $_SESSION['flash_error'] = 'This event is closed or has already ended.';
-        } elseif (!is_logged_in() || current_user_role() !== 'user') {
-            $_SESSION['flash_error'] = 'Please log in as a volunteer to apply.';
-        } else {
-            $user_id = (int)$_SESSION['user_id'];
-            if (va_user_has_applied($pdo, $user_id, $id)) {
-                $_SESSION['flash_error'] = 'You have already applied for this cleanup drive.';
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        if (isset($_POST['apply'])) {
+            // 2. State validation (Server-side enforcement)
+            if ($project['status'] !== 'open' || project_is_past($project)) {
+                $_SESSION['flash_error'] = 'This event is closed or has already ended.';
+            } elseif (!is_logged_in() || current_user_role() !== 'user') {
+                $_SESSION['flash_error'] = 'Please log in as a volunteer to apply.';
             } else {
-                va_create($pdo, $user_id, $id);
-                $_SESSION['flash_success'] = 'You have successfully applied! We will contact you soon.';
+                $user_id = (int)$_SESSION['user_id'];
+                if (va_user_has_applied($pdo, $user_id, $id)) {
+                    $_SESSION['flash_error'] = 'You have already applied for this cleanup drive.';
+                } else {
+                    va_create($pdo, $user_id, $id);
+                    $_SESSION['flash_success'] = 'You have successfully applied! We will contact you soon.';
+                }
             }
+            header("Location: index.php?route=event_show&id=$id");
+            exit;
+        } elseif (isset($_POST['cancel_apply'])) {
+            if (!is_logged_in() || current_user_role() !== 'user') {
+                $_SESSION['flash_error'] = 'Please log in to manage your registration.';
+            } else {
+                 $user_id = (int)$_SESSION['user_id'];
+                 if (va_user_has_applied($pdo, $user_id, $id)) {
+                     va_remove($pdo, $user_id, $id);
+                     $_SESSION['flash_success'] = 'Your application has been withdrawn.';
+                 } else {
+                     $_SESSION['flash_error'] = 'You are not registered for this event.';
+                 }
+            }
+            header("Location: index.php?route=event_show&id=$id");
+            exit;
         }
-        header("Location: index.php?route=event_show&id=$id");
-        exit;
     }
 
     // Handle Comments

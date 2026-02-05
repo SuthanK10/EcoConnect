@@ -320,6 +320,14 @@
               <i data-lucide="calendar-days" class="w-5 h-5 text-white"></i>
               Add to Google Calendar
             </a>
+
+            <form method="post" id="cancelForm" class="mt-4 text-center">
+                <?php echo csrf_field(); ?>
+                <input type="hidden" name="cancel_apply" value="1">
+                <button type="button" onclick="showCancelModal()" class="text-xs font-bold text-red-300 hover:text-red-200 hover:underline transition-colors uppercase tracking-widest">
+                    Cancel Registration
+                </button>
+            </form>
           </div>
         <?php else: ?>
           <form method="post" class="relative z-10">
@@ -337,3 +345,62 @@
     </div>
   </div>
 </div>
+
+<!-- Custom Confirmation Modal -->
+<div id="cancelModal" class="fixed inset-0 z-50 hidden opacity-0 transition-opacity duration-300">
+    <!-- Backdrop -->
+    <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="hideCancelModal()"></div>
+    
+    <!-- Modal Content -->
+    <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[90%] max-w-md bg-white dark:bg-darkSurface rounded-[32px] p-8 shadow-2xl border border-gray-100 dark:border-white/10 scale-95 transition-transform duration-300" id="modalContent">
+        <div class="text-center">
+            <div class="w-16 h-16 rounded-full bg-red-50 dark:bg-red-900/20 flex items-center justify-center mx-auto mb-6 text-red-500">
+                <i data-lucide="alert-circle" class="w-8 h-8"></i>
+            </div>
+            
+            <h3 class="text-xl font-black text-[#121613] dark:text-white mb-2">Withdraw Application?</h3>
+            <p class="text-sm text-[#677e6b] dark:text-gray-400 font-medium leading-relaxed mb-8">
+                Are you sure you want to cancel your registration for this cleanup drive? You can always re-apply later if spots are available.
+            </p>
+            
+            <div class="flex items-center gap-3">
+                <button onclick="hideCancelModal()" class="flex-1 py-3.5 rounded-xl bg-gray-100 dark:bg-white/5 text-[#121613] dark:text-gray-300 text-xs font-black uppercase tracking-widest hover:bg-gray-200 dark:hover:bg-white/10 transition-colors">
+                    Keep It
+                </button>
+                <button onclick="confirmCancel()" class="flex-1 py-3.5 rounded-xl bg-red-500 text-white text-xs font-black uppercase tracking-widest hover:bg-red-600 transition-colors shadow-lg shadow-red-500/30">
+                    Yes, Withdraw
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function showCancelModal() {
+        const modal = document.getElementById('cancelModal');
+        const content = document.getElementById('modalContent');
+        modal.classList.remove('hidden');
+        // Small delay to allow display:block to apply before opacity transition
+        setTimeout(() => {
+            modal.classList.remove('opacity-0');
+            content.classList.remove('scale-95');
+            content.classList.add('scale-100');
+        }, 10);
+    }
+
+    function hideCancelModal() {
+        const modal = document.getElementById('cancelModal');
+        const content = document.getElementById('modalContent');
+        modal.classList.add('opacity-0');
+        content.classList.remove('scale-100');
+        content.classList.add('scale-95');
+        
+        setTimeout(() => {
+            modal.classList.add('hidden');
+        }, 300);
+    }
+
+    function confirmCancel() {
+        document.getElementById('cancelForm').submit();
+    }
+</script>

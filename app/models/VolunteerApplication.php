@@ -12,6 +12,11 @@ function va_create(PDO $pdo, int $user_id, int $project_id) {
     $stmt->execute([$user_id, $project_id]);
 }
 
+function va_remove(PDO $pdo, int $user_id, int $project_id) {
+    $stmt = $pdo->prepare("DELETE FROM volunteer_applications WHERE user_id = ? AND project_id = ?");
+    return $stmt->execute([$user_id, $project_id]);
+}
+
 function va_list_for_user(PDO $pdo, int $user_id) {
     $stmt = $pdo->prepare("
         SELECT va.*, p.title, p.location, p.event_date, p.start_time, p.end_time, p.description, n.name as ngo_name,
