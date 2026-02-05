@@ -13,8 +13,10 @@ date_default_timezone_set('Asia/Colombo');
 // Auto-detect environment
 $host_name = strtok($_SERVER['HTTP_HOST'] ?? '', ':');
 $is_localhost_url = ($host_name === 'localhost' || $host_name === '127.0.0.1');
-$app_env = $_ENV['APP_ENV'] ?? $_SERVER['APP_ENV'] ?? ($is_localhost_url ? 'local' : 'production');
-$is_production = ($app_env === 'production');
+
+// CRITICAL FIX: If not on localhost, force production mode for Database
+// This prevents the app from reading "APP_ENV=local" from .env and trying to connect to 127.0.0.1 on the server
+$is_production = (!$is_localhost_url) || (($_ENV['APP_ENV'] ?? 'local') === 'production');
 
 // Database Configuration
 if ($is_production) {
@@ -63,7 +65,19 @@ try {
             exit;
         }
     } else {
-        echo 'Database connection failed: ' . htmlspecialchars($e->getMessage());
+        // Show detailed diagnostic info when connection fails
+        echo "<div style='font-family:sans-serif; padding:20px; border:1px solid red; background:#fff0f0;'>";
+        echo "<h2 style='color:red; margin-top:0;'>Database Connection Failed</h2>";
+        echo "<p><b>Error Details:</b> " . htmlspecialchars($e->getMessage()) . "</p>";
+        echo "<hr>";
+        echo "<p><b>Attempted Connection:</b></p>";
+        echo "<ul>";
+        echo "<li><b>Host:</b> $host</li>";
+        echo "<li><b>User:</b> $user</li>";
+        echo "<li><b>Database:</b> $db</li>";
+        echo "</ul>";
+        echo "<p><i>Please match these details with your InfinityFree 'MySQL Details' section.</i></p>";
+        echo "</div>";
         exit;
     }
 }

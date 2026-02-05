@@ -74,7 +74,7 @@
                 <div class="w-10 h-10 bg-white dark:bg-darkBg rounded-xl flex items-center justify-center text-xl shadow-inner mb-4 text-[#2c4931] dark:text-[#4ade80]">
                     <i data-lucide="user"></i>
                 </div>
-                <p class="font-black text-sm uppercase tracking-widest text-[#121613] dark:text-white">Volunteer</p>
+                <p class="font-black text-[10px] sm:text-sm uppercase tracking-wider sm:tracking-widest text-[#121613] dark:text-white">Volunteer</p>
                 <p class="text-[10px] font-bold text-[#677e6b] dark:text-gray-500 mt-1 uppercase">Join cleanup drives near you</p>
               </div>
               <div class="absolute top-4 right-4 text-[#2c4931] opacity-0 peer-checked:opacity-100 transition-opacity">
@@ -88,7 +88,7 @@
                 <div class="w-10 h-10 bg-white dark:bg-darkBg rounded-xl flex items-center justify-center text-xl shadow-inner mb-4 text-[#2c4931] dark:text-[#4ade80]">
                     <i data-lucide="building"></i>
                 </div>
-                <p class="font-black text-sm uppercase tracking-widest text-[#121613] dark:text-white">Organization</p>
+                <p class="font-black text-[10px] sm:text-sm uppercase tracking-wider sm:tracking-widest text-[#121613] dark:text-white">Organization</p>
                 <p class="text-[10px] font-bold text-[#677e6b] dark:text-gray-500 mt-1 uppercase">Host & Manage cleanup events</p>
               </div>
               <div class="absolute top-4 right-4 text-[#2c4931] opacity-0 peer-checked:opacity-100 transition-opacity">
@@ -135,9 +135,10 @@
               <input type="text" name="city" id="locationInput" value="<?php echo h($_POST['city'] ?? ''); ?>" placeholder="e.g. Colombo, Galle..." class="block w-full px-5 py-4 rounded-2xl border-2 border-gray-100 dark:border-white/5 bg-gray-50 dark:bg-darkBg text-[#121613] dark:text-white focus:ring-4 focus:ring-[#2c4931]/10 focus:border-[#2c4931] transition-all outline-none font-medium">
             </div>
 
-            <div class="space-y-4">
+            <div class="flex flex-col gap-4">
               <label class="block text-xs font-black uppercase tracking-widest text-[#677e6b] dark:text-gray-500">Pick Precise Location <span class="text-red-500 text-[14px]">*</span></label>
-              <div class="grid grid-cols-2 gap-4">
+              
+              <div class="grid grid-cols-2 gap-4 order-2 md:order-1">
                 <div>
                   <label class="block text-[10px] font-black text-[#121613] dark:text-white uppercase tracking-widest mb-2">Latitude</label>
                   <input type="number" step="any" name="latitude" id="lat" value="<?php echo h($_POST['latitude'] ?? ''); ?>" placeholder="6.1234" class="block w-full px-5 py-4 rounded-2xl border-2 border-gray-100 dark:border-white/5 bg-gray-50 dark:bg-darkBg text-[#121613] dark:text-white focus:ring-4 focus:ring-[#2c4931]/10 focus:border-[#2c4931] transition-all outline-none font-medium">
@@ -147,10 +148,12 @@
                   <input type="number" step="any" name="longitude" id="lng" value="<?php echo h($_POST['longitude'] ?? ''); ?>" placeholder="80.1234" class="block w-full px-5 py-4 rounded-2xl border-2 border-gray-100 dark:border-white/5 bg-gray-50 dark:bg-darkBg text-[#121613] dark:text-white focus:ring-4 focus:ring-[#2c4931]/10 focus:border-[#2c4931] transition-all outline-none font-medium">
                 </div>
               </div>
-              <button type="button" onclick="getLocation()" class="w-full py-4 rounded-2xl bg-white dark:bg-white/5 border-2 border-dashed border-[#2c4931]/20 dark:border-white/10 text-[#2c4931] dark:text-[#4ade80] text-xs font-black uppercase tracking-widest hover:border-[#2c4931] dark:hover:border-[#4ade80] transition-all flex items-center justify-center gap-2">
+              
+              <button type="button" onclick="getLocation()" class="w-full py-4 rounded-2xl bg-white dark:bg-white/5 border-2 border-dashed border-[#2c4931]/20 dark:border-white/10 text-[#2c4931] dark:text-[#4ade80] text-xs font-black uppercase tracking-widest hover:border-[#2c4931] dark:hover:border-[#4ade80] transition-all flex items-center justify-center gap-2 order-1 md:order-2">
                 <i data-lucide="map-pin" class="w-4 h-4"></i> Use Current Location
               </button>
-              <p class="text-[11px] font-bold text-[#677e6b] italic">Marking your location is required to notify you of cleanup drives in your area!</p>
+              
+              <p class="text-[11px] font-bold text-[#677e6b] italic order-3">Marking your location is required to notify you of cleanup drives in your area!</p>
             </div>
           </div>
 
