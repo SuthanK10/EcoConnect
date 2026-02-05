@@ -329,7 +329,7 @@
               name="apply"
               class="w-full py-4 rounded-2xl bg-white text-[#2c4931] text-sm font-black tracking-wide hover:bg-gray-100 transition-all shadow-[0_10px_30px_rgba(0,0,0,0.2)] transform hover:-translate-y-1 flex items-center justify-center gap-2"
             >
-              Apply to Volunteer <i data-lucide="heart" class="w-5 h-5"></i>
+              Apply to Volunteer <i data-lucide="user-plus" class="w-5 h-5"></i>
             </button>
           </form>
         <?php endif; ?>
