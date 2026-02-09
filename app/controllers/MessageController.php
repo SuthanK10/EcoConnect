@@ -92,8 +92,14 @@ function message_send(PDO $pdo) {
 function message_contact_ngo(PDO $pdo) {
     require_login('user');
     
-    // Fetch all approved NGOs
-    $stmt = $pdo->prepare("SELECT u.id as user_id, n.name, n.logo_path FROM ngos n JOIN users u ON n.user_id = u.id WHERE n.status = 'approved'");
+    // Fetch all approved NGOs (ensure user account is also active)
+    $stmt = $pdo->prepare("
+        SELECT u.id as user_id, n.name, n.logo_path 
+        FROM ngos n 
+        JOIN users u ON n.user_id = u.id 
+        WHERE n.status = 'approved' AND u.is_active = 1
+        ORDER BY n.name ASC
+    ");
     $stmt->execute();
     $ngos = $stmt->fetchAll();
 
