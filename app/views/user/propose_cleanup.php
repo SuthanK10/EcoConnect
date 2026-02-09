@@ -37,36 +37,123 @@
 
                 <div>
                     <label class="block text-xs font-black text-[#121613] dark:text-gray-200 uppercase tracking-[0.2em] mb-3">Preferred Date *</label>
-                    <input type="date" name="date" required 
-                        class="w-full px-6 py-4 rounded-2xl bg-[#f0f5f1] dark:bg-darkBg border-none focus:ring-2 focus:ring-[#2c4931] font-bold text-[#121613] dark:text-white">
+                    <div class="relative">
+                        <input type="text" name="date" id="date_picker" required 
+                            class="w-full px-6 py-4 rounded-2xl bg-[#f0f5f1] dark:bg-darkBg border-none focus:ring-2 focus:ring-[#2c4931] font-bold text-[#121613] dark:text-white"
+                            placeholder="Select Date">
+                         <i data-lucide="calendar" class="absolute right-6 top-1/2 -translate-y-1/2 w-5 h-5 text-[#677e6b] pointer-events-none"></i>
+                    </div>
                 </div>
-            </div>
 
-            <!-- Right Side: Description & Coordinates -->
-            <div class="space-y-6">
-                <div>
+                <!-- Flatpickr Resources & Custom Styles -->
+                <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+                <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+                
+                <style>
+                    /* Premium Custom Flatpickr Theme */
+                    .flatpickr-calendar {
+                        border: none !important;
+                        border-radius: 24px !important;
+                        box-shadow: 0 20px 40px -10px rgba(0,0,0,0.1) !important;
+                        font-family: inherit !important;
+                        padding: 16px !important;
+                        background: #ffffff !important;
+                    }
+                    .dark .flatpickr-calendar {
+                        background: #1A1E1B !important;
+                        box-shadow: 0 20px 40px -10px rgba(0,0,0,0.5) !important;
+                    }
+
+                    /* Header */
+                    .flatpickr-month { margin-bottom: 12px !important; }
+                    .flatpickr-current-month {
+                        font-weight: 800 !important;
+                        text-transform: uppercase !important;
+                        letter-spacing: 0.1em !important;
+                        font-size: 14px !important;
+                        color: #121613 !important;
+                    }
+                    .dark .flatpickr-current-month { color: #ffffff !important; }
+                    .flatpickr-prev-month, .flatpickr-next-month { fill: #677e6b !important; }
+                    .flatpickr-prev-month:hover svg, .flatpickr-next-month:hover svg { fill: #2c4931 !important; }
+                    .dark .flatpickr-prev-month:hover svg, .dark .flatpickr-next-month:hover svg { fill: #4ade80 !important; }
+
+                    /* Weekdays */
+                    .flatpickr-weekday {
+                        font-weight: 700 !important;
+                        color: #a3a3a3 !important;
+                        font-size: 10px !important;
+                        text-transform: uppercase !important;
+                        letter-spacing: 0.1em !important;
+                    }
+
+                    /* Days */
+                    .flatpickr-day {
+                        border-radius: 12px !important;
+                        font-weight: 600 !important;
+                        color: #121613 !important;
+                        border: 1px solid transparent !important;
+                    }
+                    .dark .flatpickr-day { color: #e5e5e5 !important; }
+                    .flatpickr-day:hover { background: #f0f5f1 !important; border-color: #f0f5f1 !important; }
+                    .dark .flatpickr-day:hover { background: rgba(255,255,255,0.05) !important; border-color: transparent !important; }
+
+                    .flatpickr-day.selected, .flatpickr-day.selected:hover {
+                        background: #2c4931 !important;
+                        border-color: #2c4931 !important;
+                        color: #ffffff !important;
+                        box-shadow: 0 4px 12px rgba(44, 73, 49, 0.3) !important;
+                    }
+                    .dark .flatpickr-day.selected, .dark .flatpickr-day.selected:hover {
+                        background: #4ade80 !important;
+                        border-color: #4ade80 !important;
+                        color: #121613 !important;
+                        box-shadow: 0 4px 12px rgba(74, 222, 128, 0.3) !important;
+                    }
+                    .flatpickr-day.today { border-color: #2c4931 !important; }
+                    .dark .flatpickr-day.today { border-color: #4ade80 !important; }
+                </style>
+
+                <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    flatpickr("#date_picker", {
+                        dateFormat: "Y-m-d",
+                        minDate: "today",
+                        disableMobile: "true",
+                        animate: true,
+                        prevArrow: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-left"><path d="m15 18-6-6 6-6"/></svg>',
+                        nextArrow: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right"><path d="m9 18 6-6-6-6"/></svg>'
+                    });
+                });
+                </script>
+                
+                 <div>
                     <label class="block text-xs font-black text-[#121613] dark:text-gray-200 uppercase tracking-[0.2em] mb-3">Description</label>
                     <textarea name="description" rows="4" placeholder="Tell us about the area and why it needs cleaning..." 
                         class="w-full px-6 py-4 rounded-2xl bg-[#f0f5f1] dark:bg-darkBg border-none focus:ring-2 focus:ring-[#2c4931] placeholder:text-gray-400 font-bold text-[#121613] dark:text-white"></textarea>
                 </div>
+            </div>
 
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-[10px] font-black text-[#121613] dark:text-gray-200 uppercase tracking-widest mb-2">Latitude (Optional)</label>
-                        <input type="number" step="any" name="latitude" id="lat" placeholder="6.1234" 
-                            class="w-full px-4 py-3 rounded-xl bg-[#f0f5f1] dark:bg-darkBg border-none focus:ring-2 focus:ring-[#2c4931] text-xs font-bold text-[#121613] dark:text-white">
-                    </div>
-                    <div>
-                        <label class="block text-[10px] font-black text-[#121613] dark:text-gray-200 uppercase tracking-widest mb-2">Longitude (Optional)</label>
-                        <input type="number" step="any" name="longitude" id="lng" placeholder="80.1234" 
-                            class="w-full px-4 py-3 rounded-xl bg-[#f0f5f1] dark:bg-darkBg border-none focus:ring-2 focus:ring-[#2c4931] text-xs font-bold text-[#121613] dark:text-white">
-                    </div>
+            <!-- Right Side: Map -->
+            <div class="space-y-6">
+                <div>
+                     <label class="block text-xs font-black text-[#121613] dark:text-gray-200 uppercase tracking-[0.2em] mb-3">Pin Location on Map *</label>
+                     <p class="text-[10px] text-[#677e6b] dark:text-gray-400 mb-2">Search for a place or click anywhere on the map to set the cleanup location.</p>
+                     
+                     <!-- Search Bar -->
+                     <div class="flex gap-2 mb-3">
+                        <input type="text" id="mapSearchInput" placeholder="Search for a location..." 
+                            class="flex-1 px-4 py-2 rounded-xl bg-[#f0f5f1] dark:bg-darkBg border-none focus:ring-2 focus:ring-[#2c4931] text-xs font-bold text-[#121613] dark:text-white">
+                        <button type="button" onclick="searchLocation()" class="px-4 py-2 bg-[#2c4931] text-white rounded-xl text-xs font-black">Search</button>
+                     </div>
+
+                     <!-- Leaflet Map Container -->
+                     <div id="map" class="w-full h-[300px] rounded-2xl border border-gray-200 dark:border-white/10 z-0"></div>
+                     
+                     <!-- Hidden fields for coordinates -->
+                     <input type="hidden" name="latitude" id="lat">
+                     <input type="hidden" name="longitude" id="lng">
                 </div>
-
-                <button type="button" onclick="getLocation()" 
-                    class="w-full py-4 rounded-2xl bg-white dark:bg-white/5 border-2 border-dashed border-[#2c4931]/20 dark:border-white/10 text-[#2c4931] dark:text-[#4ade80] text-xs font-black uppercase tracking-widest hover:border-[#2c4931] dark:hover:border-[#4ade80] transition-all flex items-center justify-center gap-2">
-                    <i data-lucide="map-pin" class="w-4 h-4"></i> Use Current Location
-                </button>
             </div>
         </div>
 
@@ -81,18 +168,54 @@
     </form>
 </div>
 
+<!-- Leaflet CSS & JS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
 <script>
-function getLocation() {
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(position => {
-            document.getElementById('lat').value = position.coords.latitude;
-            document.getElementById('lng').value = position.coords.longitude;
-            alert('Location captured successfully!');
-        }, error => {
-            alert('Error getting location: ' + error.message);
-        });
-    } else {
-        alert('Geolocation is not supported by this browser.');
+    // Initialize map centered on Sri Lanka
+    var map = L.map('map').setView([7.8731, 80.7718], 7);
+    var marker;
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '© OpenStreetMap'
+    }).addTo(map);
+
+    // Click handler to set marker
+    map.on('click', function(e) {
+        setMarker(e.latlng.lat, e.latlng.lng);
+    });
+
+    function setMarker(lat, lng) {
+        if (marker) {
+            map.removeLayer(marker);
+        }
+        marker = L.marker([lat, lng]).addTo(map);
+        document.getElementById('lat').value = lat;
+        document.getElementById('lng').value = lng;
     }
-}
+
+    // Simple search functionality using Nominatim
+    function searchLocation() {
+        var query = document.getElementById('mapSearchInput').value;
+        if (!query) return;
+
+        fetch('https://nominatim.openstreetmap.org/search?format=json&q=' + encodeURIComponent(query + ', Sri Lanka'))
+            .then(response => response.json())
+            .then(data => {
+                if (data && data.length > 0) {
+                    var lat = data[0].lat;
+                    var lon = data[0].lon;
+                    map.setView([lat, lon], 13);
+                    setMarker(lat, lon);
+                } else {
+                    alert('Location not found within Sri Lanka.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while searching.');
+            });
+    }
 </script>

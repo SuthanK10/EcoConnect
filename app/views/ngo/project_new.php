@@ -61,18 +61,93 @@ $proposalData = $_SESSION['adopting_proposal_data'] ?? null;
                 class="w-full px-6 py-4 rounded-2xl bg-[#f0f5f1] dark:bg-white/5 border-none focus:ring-2 focus:ring-[#2c4931] dark:focus:ring-[#4ade80] placeholder:text-gray-400 font-bold text-[#121613] dark:text-white transition-all"><?php echo h($proposalData['description'] ?? ''); ?></textarea>
         </div>
 
-        <div>
+        <div class="relative group z-50">
             <label class="block text-xs font-black text-[#121613] dark:text-white uppercase tracking-[0.2em] mb-3">Drive Category</label>
-            <select name="category" required class="w-full px-6 py-4 rounded-2xl bg-[#f0f5f1] dark:bg-[#1e293b] border-none focus:ring-2 focus:ring-[#2c4931] dark:focus:ring-[#4ade80] font-bold text-[#121613] dark:text-white transition-all cursor-pointer">
-                <option value="Beach & Coastal Cleanups" class="dark:bg-[#1e293b] dark:text-white">Beach & Coastal Cleanups</option>
-                <option value="Waterway & Wetland Cleanups" class="dark:bg-[#1e293b] dark:text-white">Waterway & Wetland Cleanups</option>
-                <option value="Park & Forest Cleanups" class="dark:bg-[#1e293b] dark:text-white">Park & Forest Cleanups</option>
-                <option value="Urban & Street Cleanups" class="dark:bg-[#1e293b] dark:text-white">Urban & Street Cleanups</option>
-                <option value="Underwater/Dive Cleanups" class="dark:bg-[#1e293b] dark:text-white">Underwater/Dive Cleanups</option>
-                <option value="Tree Planting & Reforestation" class="dark:bg-[#1e293b] dark:text-white">Tree Planting & Reforestation</option>
-                <option value="General Cleanup" selected class="dark:bg-[#1e293b] dark:text-white">General Cleanup</option>
-            </select>
+            
+            <!-- Hidden Input -->
+            <input type="hidden" name="category" id="category_input" value="General Cleanup">
+            
+            <!-- Custom Dropdown Trigger -->
+            <div id="dropdown_trigger" onclick="toggleDropdown()" 
+                class="w-full px-6 py-4 rounded-2xl bg-[#f0f5f1] dark:bg-white/5 border border-transparent hover:border-[#2c4931]/20 dark:hover:border-[#4ade80]/20 cursor-pointer flex items-center justify-between transition-all group-hover:scale-[1.01]">
+                <div class="flex items-center gap-3">
+                    <div id="category_icon" class="w-8 h-8 rounded-full bg-[#2c4931]/10 dark:bg-[#4ade80]/10 flex items-center justify-center text-[#2c4931] dark:text-[#4ade80]">
+                        <i data-lucide="sprout" class="w-4 h-4"></i>
+                    </div>
+                    <span id="selected_text" class="font-bold text-[#121613] dark:text-white">General Cleanup</span>
+                </div>
+                <i data-lucide="chevron-down" id="dropdown_arrow" class="w-5 h-5 text-[#677e6b] transition-transform duration-300"></i>
+            </div>
+            
+            <!-- Dropdown Options -->
+            <div id="dropdown_menu" class="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-[#1A1E1B] rounded-2xl shadow-xl border border-gray-100 dark:border-white/5 overflow-hidden transition-all duration-300 opacity-0 invisible transform -translate-y-2 origin-top z-50">
+                <div class="p-2 space-y-1 max-h-[300px] overflow-y-auto custom-scrollbar">
+                    <?php 
+                    $categories = [
+                        ['id' => 'Beach & Coastal Cleanups', 'icon' => 'waves'],
+                        ['id' => 'Waterway & Wetland Cleanups', 'icon' => 'droplets'],
+                        ['id' => 'Park & Forest Cleanups', 'icon' => 'trees'],
+                        ['id' => 'Urban & Street Cleanups', 'icon' => 'building-2'],
+                        ['id' => 'Underwater/Dive Cleanups', 'icon' => 'anchor'],
+                        ['id' => 'Tree Planting & Reforestation', 'icon' => 'shrub'],
+                        ['id' => 'General Cleanup', 'icon' => 'sprout']
+                    ];
+                    foreach($categories as $cat): ?>
+                    <div onclick="selectCategory('<?= $cat['id'] ?>', '<?= $cat['icon'] ?>')" 
+                         class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-[#f0f5f1] dark:hover:bg-white/5 cursor-pointer transition-colors group/item">
+                        <div class="w-8 h-8 rounded-full bg-gray-50 dark:bg-white/5 flex items-center justify-center text-gray-400 group-hover/item:text-[#2c4931] dark:group-hover/item:text-[#4ade80] transition-colors">
+                            <i data-lucide="<?= $cat['icon'] ?>" class="w-4 h-4"></i>
+                        </div>
+                        <span class="font-bold text-gray-600 dark:text-gray-300 group-hover/item:text-[#121613] dark:group-hover/item:text-white"><?= h($cat['id']) ?></span>
+                        <i data-lucide="check" class="w-4 h-4 text-[#2c4931] dark:text-[#4ade80] ml-auto opacity-0 group-hover/item:opacity-100 transition-opacity"></i>
+                    </div>
+                    <?php endforeach; ?>
+                </div>
+            </div>
         </div>
+
+        <script>
+        function toggleDropdown() {
+            const menu = document.getElementById('dropdown_menu');
+            const arrow = document.getElementById('dropdown_arrow');
+            
+            if (menu.classList.contains('invisible')) {
+                // Open
+                menu.classList.remove('invisible', 'opacity-0', '-translate-y-2');
+                arrow.classList.add('rotate-180');
+            } else {
+                // Close
+                menu.classList.add('invisible', 'opacity-0', '-translate-y-2');
+                arrow.classList.remove('rotate-180');
+            }
+        }
+
+        function selectCategory(value, icon) {
+            document.getElementById('category_input').value = value;
+            document.getElementById('selected_text').innerText = value;
+            
+            // Update Icon
+            const iconContainer = document.getElementById('category_icon');
+            iconContainer.innerHTML = `<i data-lucide="${icon}" class="w-4 h-4"></i>`;
+            
+            // Close dropdown
+            toggleDropdown();
+            
+            // Re-initialize icons for the new one
+            lucide.createIcons();
+        }
+
+        // Close when clicking outside
+        document.addEventListener('click', function(event) {
+            const trigger = document.getElementById('dropdown_trigger');
+            const menu = document.getElementById('dropdown_menu');
+            
+            if (!trigger.contains(event.target) && !menu.contains(event.target)) {
+                menu.classList.add('invisible', 'opacity-0', '-translate-y-2');
+                document.getElementById('dropdown_arrow').classList.remove('rotate-180');
+            }
+        });
+        </script>
 
         <div>
           <label class="block text-xs font-black text-[#121613] dark:text-white uppercase tracking-[0.2em] mb-3">Cover Image</label>
@@ -119,21 +194,217 @@ $proposalData = $_SESSION['adopting_proposal_data'] ?? null;
         <div class="grid grid-cols-1 gap-4">
             <div>
               <label class="block text-xs font-black text-[#121613] dark:text-white uppercase tracking-[0.2em] mb-3">Drive Date</label>
-              <input type="date" name="event_date" required 
-                value="<?php echo h($proposalData['proposed_date'] ?? ''); ?>"
-                class="w-full px-6 py-4 rounded-2xl bg-[#f0f5f1] dark:bg-white/5 border-none focus:ring-2 focus:ring-[#2c4931] dark:focus:ring-[#4ade80] font-bold text-[#121613] dark:text-white transition-all">
+              <div class="relative">
+                  <input type="text" name="event_date" id="event_date_picker" required 
+                    value="<?php echo h($proposalData['proposed_date'] ?? ''); ?>"
+                    class="w-full px-6 py-4 rounded-2xl bg-[#f0f5f1] dark:bg-white/5 border-none focus:ring-2 focus:ring-[#2c4931] dark:focus:ring-[#4ade80] font-bold text-[#121613] dark:text-white transition-all cursor-pointer"
+                    placeholder="Select Date">
+                  <i data-lucide="calendar" class="absolute right-6 top-1/2 -translate-y-1/2 w-5 h-5 text-[#677e6b] pointer-events-none"></i>
+              </div>
             </div>
             <div class="grid grid-cols-2 gap-4">
                 <div>
                   <label class="block text-[10px] font-black text-[#121613] dark:text-white uppercase tracking-widest mb-2">Start Time</label>
-                  <input type="time" name="start_time" required class="w-full px-4 py-3 rounded-xl bg-[#f0f5f1] dark:bg-white/5 border-none focus:ring-2 focus:ring-[#2c4931] dark:focus:ring-[#4ade80] font-bold text-[#121613] dark:text-white transition-all">
+                  <div class="relative">
+                      <input type="text" name="start_time" id="start_time_picker" required 
+                        class="w-full px-4 py-3 rounded-xl bg-[#f0f5f1] dark:bg-white/5 border-none focus:ring-2 focus:ring-[#2c4931] dark:focus:ring-[#4ade80] font-bold text-[#121613] dark:text-white transition-all cursor-pointer"
+                        placeholder="09:00">
+                      <i data-lucide="clock" class="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#677e6b] pointer-events-none"></i>
+                  </div>
                 </div>
                 <div>
                   <label class="block text-[10px] font-black text-[#121613] dark:text-white uppercase tracking-widest mb-2">End Time</label>
-                  <input type="time" name="end_time" required class="w-full px-4 py-3 rounded-xl bg-[#f0f5f1] dark:bg-white/5 border-none focus:ring-2 focus:ring-[#2c4931] dark:focus:ring-[#4ade80] font-bold text-[#121613] dark:text-white transition-all">
+                  <div class="relative">
+                      <input type="text" name="end_time" id="end_time_picker" required 
+                        class="w-full px-4 py-3 rounded-xl bg-[#f0f5f1] dark:bg-white/5 border-none focus:ring-2 focus:ring-[#2c4931] dark:focus:ring-[#4ade80] font-bold text-[#121613] dark:text-white transition-all cursor-pointer"
+                        placeholder="12:00">
+                      <i data-lucide="clock" class="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#677e6b] pointer-events-none"></i>
+                  </div>
                 </div>
             </div>
         </div>
+
+        <!-- Flatpickr CSS & JS -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+        <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+        
+        <style>
+            /* Custom Flatpickr Theme */
+            .flatpickr-calendar {
+                border: none !important;
+                border-radius: 24px !important;
+                box-shadow: 0 20px 40px -10px rgba(0,0,0,0.1) !important;
+                font-family: inherit !important;
+                padding: 16px !important;
+                background: #ffffff !important;
+            }
+            .dark .flatpickr-calendar {
+                background: #1A1E1B !important;
+                box-shadow: 0 20px 40px -10px rgba(0,0,0,0.5) !important;
+            }
+
+            /* Header */
+            .flatpickr-month {
+                margin-bottom: 12px !important;
+            }
+            .flatpickr-current-month {
+                font-weight: 800 !important;
+                text-transform: uppercase !important;
+                letter-spacing: 0.1em !important;
+                font-size: 14px !important;
+                color: #121613 !important;
+            }
+            .dark .flatpickr-current-month {
+                color: #ffffff !important;
+            }
+            .flatpickr-prev-month, .flatpickr-next-month {
+                fill: #677e6b !important;
+            }
+            .flatpickr-prev-month:hover svg, .flatpickr-next-month:hover svg {
+                fill: #2c4931 !important;
+            }
+            .dark .flatpickr-prev-month:hover svg, .dark .flatpickr-next-month:hover svg {
+                fill: #4ade80 !important;
+            }
+
+            /* Weekdays */
+            .flatpickr-weekday {
+                font-weight: 700 !important;
+                color: #a3a3a3 !important;
+                font-size: 10px !important;
+                text-transform: uppercase !important;
+                letter-spacing: 0.1em !important;
+            }
+
+            /* Days */
+            .flatpickr-day {
+                border-radius: 12px !important;
+                font-weight: 600 !important;
+                color: #121613 !important;
+                border: 1px solid transparent !important;
+            }
+            .dark .flatpickr-day {
+                color: #e5e5e5 !important;
+            }
+            
+            .flatpickr-day:hover {
+                background: #f0f5f1 !important;
+                border-color: #f0f5f1 !important;
+            }
+            .dark .flatpickr-day:hover {
+                background: rgba(255,255,255,0.05) !important;
+                border-color: transparent !important;
+            }
+
+            .flatpickr-day.selected, .flatpickr-day.startRange, .flatpickr-day.endRange, .flatpickr-day.selected.inRange, .flatpickr-day.startRange.inRange, .flatpickr-day.endRange.inRange, .flatpickr-day.selected:focus, .flatpickr-day.startRange:focus, .flatpickr-day.endRange:focus, .flatpickr-day.selected:hover, .flatpickr-day.startRange:hover, .flatpickr-day.endRange:hover, .flatpickr-day.selected.prevMonthDay, .flatpickr-day.startRange.prevMonthDay, .flatpickr-day.endRange.prevMonthDay, .flatpickr-day.selected.nextMonthDay, .flatpickr-day.startRange.nextMonthDay, .flatpickr-day.endRange.nextMonthDay {
+                background: #2c4931 !important;
+                border-color: #2c4931 !important;
+                color: #ffffff !important;
+                box-shadow: 0 4px 12px rgba(44, 73, 49, 0.3) !important;
+            }
+            .dark .flatpickr-day.selected {
+                background: #4ade80 !important;
+                border-color: #4ade80 !important;
+                color: #121613 !important;
+                box-shadow: 0 4px 12px rgba(74, 222, 128, 0.3) !important;
+            }
+
+            .flatpickr-day.today {
+                border-color: #2c4931 !important;
+            }
+            .dark .flatpickr-day.today {
+                border-color: #4ade80 !important;
+            }
+
+            /* Time Picker */
+            .flatpickr-time {
+                border-top: 1px solid #f0f5f1 !important;
+                margin-top: 12px !important;
+                padding-top: 12px !important;
+            }
+            .dark .flatpickr-time {
+                border-top: 1px solid rgba(255,255,255,0.05) !important;
+            }
+            
+            .flatpickr-time input {
+                font-weight: 700 !important;
+                color: #121613 !important;
+                font-size: 16px !important;
+            }
+            .dark .flatpickr-time input {
+                color: #ffffff !important;
+            }
+            .flatpickr-time .flatpickr-am-pm {
+                font-weight: 800 !important;
+                color: #2c4931 !important;
+            }
+            .dark .flatpickr-time .flatpickr-am-pm {
+                color: #4ade80 !important;
+            }
+            
+            .flatpickr-time input:hover, .flatpickr-time .flatpickr-am-pm:hover, .flatpickr-time input:focus, .flatpickr-time .flatpickr-am-pm:focus {
+                background: #f0f5f1 !important;
+            }
+            .dark .flatpickr-time input:hover, .dark .flatpickr-time .flatpickr-am-pm:hover, .dark .flatpickr-time input:focus, .dark .flatpickr-time .flatpickr-am-pm:focus {
+                background: rgba(255,255,255,0.05) !important;
+            }
+
+            /* Hide arrows on time input hover */
+            .numInputWrapper span {
+                visibility: hidden !important;
+            }
+        </style>
+        
+        <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const config = {
+                disableMobile: "true",
+                animate: true,
+                prevArrow: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-left"><path d="m15 18-6-6 6-6"/></svg>',
+                nextArrow: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right"><path d="m9 18 6-6-6-6"/></svg>'
+            };
+
+            flatpickr("#event_date_picker", {
+                ...config,
+                dateFormat: "Y-m-d",
+                minDate: "today",
+            });
+            
+            // Manual Time Inputs
+            const timeInputs = ['start_time_picker', 'end_time_picker'];
+            
+            timeInputs.forEach(id => {
+                const el = document.getElementById(id);
+                
+                // Allow only numbers and colon
+                el.addEventListener('input', function(e) {
+                    let val = e.target.value.replace(/[^0-9:]/g, '');
+                    
+                    // Auto-insert colon after 2 digits
+                    if(val.length === 2 && !val.includes(':')) {
+                        val += ':';
+                    }
+                    
+                    // Limit length
+                    if(val.length > 5) val = val.substring(0, 5);
+                    
+                    e.target.value = val;
+                });
+                
+                // Validate on blur
+                el.addEventListener('blur', function(e) {
+                     const val = e.target.value;
+                     const timeRegex = /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/;
+                     
+                     if(val && !timeRegex.test(val)) {
+                         alert('Please enter a valid 24h time format (HH:MM)');
+                         e.target.value = '';
+                     }
+                     calculateNGOPoints();
+                });
+            });
+        });
+        </script>
 
         <div>
             <label class="block text-xs font-black text-[#121613] dark:text-white uppercase tracking-[0.2em] mb-3">Points Reward (10 pts/hr)</label>

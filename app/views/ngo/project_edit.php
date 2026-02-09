@@ -60,47 +60,328 @@
         <div class="lg:col-span-8 space-y-6">
             <div class="bg-white dark:bg-darkSurface rounded-[40px] p-8 md:p-10 border border-gray-100 dark:border-white/5 shadow-sm space-y-8">
                 <!-- Title, Status, Category -->
-                <div class="grid grid-cols-1 md:grid-cols-6 gap-6">
-                    <div class="md:col-span-3 group">
+                <!-- Title, Status, Category -->
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+                    <!-- Title: Full Width -->
+                    <div class="md:col-span-12 group">
                         <label class="block text-xs font-black uppercase tracking-widest text-[#677e6b] dark:text-gray-500 mb-2">Mission Title</label>
                         <input type="text" name="title" value="<?php echo h($project['title']); ?>" required class="block w-full px-5 py-4 rounded-2xl border-2 border-gray-50 dark:border-white/5 bg-gray-50 dark:bg-darkBg text-[#121613] dark:text-white focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all outline-none font-medium">
                     </div>
-                    <div class="md:col-span-2 group">
+                    
+                    <!-- Category: 8 Cols -->
+                    <div class="md:col-span-8 group relative z-20">
                         <label class="block text-xs font-black uppercase tracking-widest text-[#677e6b] dark:text-gray-500 mb-2">Category</label>
-                        <select name="category" required class="block w-full px-5 py-4 rounded-2xl border-2 border-gray-50 dark:border-white/5 bg-gray-50 dark:bg-darkBg text-[#121613] dark:text-white focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all outline-none font-medium">
-                            <option value="Beach & Coastal Cleanups" <?php echo $project['category'] === 'Beach & Coastal Cleanups' ? 'selected' : ''; ?>>Beach & Coastal Cleanups</option>
-                            <option value="Waterway & Wetland Cleanups" <?php echo $project['category'] === 'Waterway & Wetland Cleanups' ? 'selected' : ''; ?>>Waterway & Wetland Cleanups</option>
-                            <option value="Park & Forest Cleanups" <?php echo $project['category'] === 'Park & Forest Cleanups' ? 'selected' : ''; ?>>Park & Forest Cleanups</option>
-                            <option value="Urban & Street Cleanups" <?php echo $project['category'] === 'Urban & Street Cleanups' ? 'selected' : ''; ?>>Urban & Street Cleanups</option>
-                            <option value="Underwater/Dive Cleanups" <?php echo $project['category'] === 'Underwater/Dive Cleanups' ? 'selected' : ''; ?>>Underwater/Dive Cleanups</option>
-                            <option value="Tree Planting & Reforestation" <?php echo $project['category'] === 'Tree Planting & Reforestation' ? 'selected' : ''; ?>>Tree Planting & Reforestation</option>
-                            <option value="General Cleanup" <?php echo $project['category'] === 'General Cleanup' ? 'selected' : ''; ?>>General Cleanup</option>
-                        </select>
+                        <input type="hidden" name="category" id="category_input" value="<?php echo h($project['category']); ?>">
+                        
+                        <?php
+                        $categoryIcons = [
+                            'Beach & Coastal Cleanups' => 'waves',
+                            'Waterway & Wetland Cleanups' => 'droplets',
+                            'Park & Forest Cleanups' => 'trees',
+                            'Urban & Street Cleanups' => 'building-2',
+                            'Underwater/Dive Cleanups' => 'anchor',
+                            'Tree Planting & Reforestation' => 'shrub',
+                            'General Cleanup' => 'sprout'
+                        ];
+                        $currentIcon = $categoryIcons[$project['category']] ?? 'sprout';
+                        ?>
+
+                        <div id="category_trigger" onclick="toggleCategoryDropdown()" 
+                             class="w-full px-5 py-4 rounded-2xl border-2 border-gray-50 dark:border-white/5 bg-gray-50 dark:bg-darkBg hover:border-primary/10 cursor-pointer flex items-center justify-between transition-all">
+                            <div class="flex items-center gap-3 overflow-hidden">
+                                <div id="category_icon" class="w-8 h-8 rounded-full bg-[#2c4931]/10 dark:bg-[#4ade80]/10 flex-shrink-0 flex items-center justify-center text-[#2c4931] dark:text-[#4ade80]">
+                                    <i data-lucide="<?php echo $currentIcon; ?>" class="w-4 h-4"></i>
+                                </div>
+                                <span id="category_text" class="font-medium text-[#121613] dark:text-white truncate"><?php echo h($project['category']); ?></span>
+                            </div>
+                            <i data-lucide="chevron-down" id="category_arrow" class="w-4 h-4 text-gray-400 transition-transform duration-300 flex-shrink-0"></i>
+                        </div>
+
+                        <div id="category_menu" class="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-[#1A1E1B] rounded-2xl shadow-xl border border-gray-100 dark:border-white/5 overflow-hidden transition-all duration-300 opacity-0 invisible transform -translate-y-2 origin-top z-50">
+                            <div class="p-2 space-y-1 max-h-[300px] overflow-y-auto custom-scrollbar">
+                                <?php foreach ($categoryIcons as $cat => $icon): ?>
+                                <div onclick="selectCategory('<?php echo $cat; ?>', '<?php echo $icon; ?>')" 
+                                     class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-gray-50 dark:hover:bg-white/5 cursor-pointer transition-colors group/item">
+                                    <div class="w-8 h-8 rounded-full bg-gray-50 dark:bg-white/5 flex items-center justify-center text-gray-400 group-hover/item:text-[#2c4931] dark:group-hover/item:text-[#4ade80] transition-colors">
+                                        <i data-lucide="<?php echo $icon; ?>" class="w-4 h-4"></i>
+                                    </div>
+                                    <span class="font-medium text-[#121613] dark:text-white text-sm"><?php echo $cat; ?></span>
+                                </div>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
                     </div>
-                    <div class="group">
+                    
+                    <!-- Status: 4 Cols -->
+                    <div class="md:col-span-4 group relative z-10">
                         <label class="block text-xs font-black uppercase tracking-widest text-[#677e6b] dark:text-gray-500 mb-2">Status</label>
-                        <select name="status" class="block w-full px-5 py-4 rounded-2xl border-2 border-gray-50 dark:border-white/5 bg-gray-50 dark:bg-darkBg text-[#121613] dark:text-white focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all outline-none font-medium">
-                            <option value="open" <?php echo $project['status'] === 'open' ? 'selected' : ''; ?>>Open</option>
-                            <option value="closed" <?php echo $project['status'] === 'closed' ? 'selected' : ''; ?>>Closed</option>
-                        </select>
+                        <input type="hidden" name="status" id="status_input" value="<?php echo h($project['status']); ?>">
+                        
+                        <div id="status_trigger" onclick="toggleStatusDropdown()" 
+                             class="w-full px-4 py-4 rounded-2xl border-2 border-gray-50 dark:border-white/5 bg-gray-50 dark:bg-darkBg hover:border-primary/10 cursor-pointer flex items-center justify-between transition-all">
+                            <div class="flex items-center gap-3 overflow-hidden">
+                                <div id="status_indicator" class="w-2 h-2 rounded-full flex-shrink-0 <?php echo $project['status'] === 'open' ? 'bg-green-500 shadow-[0_0_10px_rgba(34,197,94,0.4)]' : 'bg-gray-400'; ?>"></div>
+                                <span id="status_text" class="font-medium text-[#121613] dark:text-white capitalize whitespace-nowrap overflow-hidden text-ellipsis"><?php echo h($project['status']); ?></span>
+                            </div>
+                            <i data-lucide="chevron-down" id="status_arrow" class="w-4 h-4 text-gray-400 transition-transform duration-300 flex-shrink-0"></i>
+                        </div>
+
+                        <div id="status_menu" class="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-[#1A1E1B] rounded-2xl shadow-xl border border-gray-100 dark:border-white/5 overflow-hidden transition-all duration-300 opacity-0 invisible transform -translate-y-2 origin-top z-50">
+                            <div class="p-2 space-y-1">
+                                <div onclick="selectStatus('open')" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-gray-50 dark:hover:bg-white/5 cursor-pointer transition-colors">
+                                    <div class="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_10px_rgba(34,197,94,0.4)]"></div>
+                                    <span class="font-medium text-[#121613] dark:text-white">Open</span>
+                                </div>
+                                <div onclick="selectStatus('closed')" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-gray-50 dark:hover:bg-white/5 cursor-pointer transition-colors">
+                                    <div class="w-2 h-2 rounded-full bg-gray-400"></div>
+                                    <span class="font-medium text-[#121613] dark:text-white">Closed</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
                 <!-- Timing & Rewards -->
+                <!-- Timing & Rewards -->
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
                     <div class="group md:col-span-2">
                         <label class="block text-xs font-black uppercase tracking-widest text-[#677e6b] dark:text-gray-500 mb-2">Event Date</label>
-                        <input type="date" name="event_date" value="<?php echo h($project['event_date']); ?>" required class="block w-full px-5 py-4 rounded-2xl border-2 border-gray-50 dark:border-white/5 bg-gray-50 dark:bg-darkBg text-[#121613] dark:text-white focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all outline-none font-medium">
+                        <div class="relative">
+                            <input type="text" name="event_date" id="event_date_picker" value="<?php echo h($project['event_date']); ?>" required 
+                                class="block w-full px-5 py-4 rounded-2xl border-2 border-gray-50 dark:border-white/5 bg-gray-50 dark:bg-darkBg text-[#121613] dark:text-white focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all outline-none font-medium">
+                             <i data-lucide="calendar" class="absolute right-5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none"></i>
+                        </div>
                     </div>
                     <div class="group">
                         <label class="block text-xs font-black uppercase tracking-widest text-[#677e6b] dark:text-gray-500 mb-2">Start</label>
-                        <input type="time" name="start_time" value="<?php echo h($project['start_time']); ?>" required class="block w-full px-5 py-4 rounded-2xl border-2 border-gray-50 dark:border-white/5 bg-gray-50 dark:bg-darkBg text-[#121613] dark:text-white focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all outline-none font-medium text-sm">
+                         <div class="relative">
+                            <input type="text" name="start_time" id="start_time_picker" value="<?php echo date('H:i', strtotime($project['start_time'])); ?>" required 
+                                class="block w-full px-5 py-4 rounded-2xl border-2 border-gray-50 dark:border-white/5 bg-gray-50 dark:bg-darkBg text-[#121613] dark:text-white focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all outline-none font-medium text-sm">
+                        </div>
                     </div>
                     <div class="group">
                         <label class="block text-xs font-black uppercase tracking-widest text-[#677e6b] dark:text-gray-500 mb-2">End</label>
-                        <input type="time" name="end_time" value="<?php echo h($project['end_time']); ?>" required class="block w-full px-5 py-4 rounded-2xl border-2 border-gray-50 dark:border-white/5 bg-gray-50 dark:bg-darkBg text-[#121613] dark:text-white focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all outline-none font-medium text-sm">
+                        <div class="relative">
+                            <input type="text" name="end_time" id="end_time_picker" value="<?php echo date('H:i', strtotime($project['end_time'])); ?>" required 
+                                class="block w-full px-5 py-4 rounded-2xl border-2 border-gray-50 dark:border-white/5 bg-gray-50 dark:bg-darkBg text-[#121613] dark:text-white focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all outline-none font-medium text-sm">
+                        </div>
                     </div>
                 </div>
+
+                <!-- Flatpickr -->
+                <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+                <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+                
+                <style>
+                    /* Custom Flatpickr Theme */
+                    .flatpickr-calendar {
+                        border: none !important;
+                        border-radius: 24px !important;
+                        box-shadow: 0 20px 40px -10px rgba(0,0,0,0.1) !important;
+                        font-family: inherit !important;
+                        padding: 16px !important;
+                        background: #ffffff !important;
+                    }
+                    .dark .flatpickr-calendar {
+                        background: #1A1E1B !important;
+                        box-shadow: 0 20px 40px -10px rgba(0,0,0,0.5) !important;
+                    }
+
+                    /* Header */
+                    .flatpickr-month { margin-bottom: 12px !important; }
+                    .flatpickr-current-month {
+                        font-weight: 800 !important;
+                        text-transform: uppercase !important;
+                        letter-spacing: 0.1em !important;
+                        font-size: 14px !important;
+                        color: #121613 !important;
+                    }
+                    .dark .flatpickr-current-month { color: #ffffff !important; }
+                    .flatpickr-prev-month, .flatpickr-next-month { fill: #677e6b !important; }
+                    .flatpickr-prev-month:hover svg, .flatpickr-next-month:hover svg { fill: #2c4931 !important; }
+                    .dark .flatpickr-prev-month:hover svg, .dark .flatpickr-next-month:hover svg { fill: #4ade80 !important; }
+
+                    /* Weekdays */
+                    .flatpickr-weekday {
+                        font-weight: 700 !important;
+                        color: #a3a3a3 !important;
+                        font-size: 10px !important;
+                        text-transform: uppercase !important;
+                        letter-spacing: 0.1em !important;
+                    }
+
+                    /* Days */
+                    .flatpickr-day {
+                        border-radius: 12px !important;
+                        font-weight: 600 !important;
+                        color: #121613 !important;
+                        border: 1px solid transparent !important;
+                    }
+                    .dark .flatpickr-day { color: #e5e5e5 !important; }
+                    .flatpickr-day:hover { background: #f0f5f1 !important; border-color: #f0f5f1 !important; }
+                    .dark .flatpickr-day:hover { background: rgba(255,255,255,0.05) !important; border-color: transparent !important; }
+
+                    .flatpickr-day.selected, .flatpickr-day.selected:hover {
+                        background: #2c4931 !important;
+                        border-color: #2c4931 !important;
+                        color: #ffffff !important;
+                        box-shadow: 0 4px 12px rgba(44, 73, 49, 0.3) !important;
+                    }
+                    .dark .flatpickr-day.selected, .dark .flatpickr-day.selected:hover {
+                        background: #4ade80 !important;
+                        border-color: #4ade80 !important;
+                        color: #121613 !important;
+                        box-shadow: 0 4px 12px rgba(74, 222, 128, 0.3) !important;
+                    }
+                    .flatpickr-day.today { border-color: #2c4931 !important; }
+                    .dark .flatpickr-day.today { border-color: #4ade80 !important; }
+                </style>
+
+                <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    const config = {
+                        disableMobile: "true",
+                        animate: true,
+                        prevArrow: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-left"><path d="m15 18-6-6 6-6"/></svg>',
+                        nextArrow: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right"><path d="m9 18 6-6-6-6"/></svg>'
+                    };
+
+                    flatpickr("#event_date_picker", {
+                        ...config,
+                         dateFormat: "Y-m-d",
+                        minDate: "today",
+                    });
+                    
+                    // Manual Time Inputs
+                    const timeInputs = ['start_time_picker', 'end_time_picker'];
+                    
+                    timeInputs.forEach(id => {
+                        const el = document.getElementById(id);
+                        if (!el) return;
+                        
+                        // ... existing time input logic ...
+                        el.addEventListener('input', function(e) {
+                            let val = e.target.value.replace(/[^0-9:]/g, '');
+                            if(val.length === 2 && !val.includes(':')) val += ':';
+                            if(val.length > 5) val = val.substring(0, 5);
+                            e.target.value = val;
+                        });
+                        
+                        el.addEventListener('blur', function(e) {
+                             const val = e.target.value;
+                             const timeRegex = /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/;
+                             if(val && !timeRegex.test(val)) {
+                                 alert('Please enter a valid 24h time format (HH:MM)');
+                                 e.target.value = '';
+                             }
+                        });
+                    });
+                });
+
+                function toggleStatusDropdown() {
+                    const menu = document.getElementById('status_menu');
+                    const arrow = document.getElementById('status_arrow');
+                    
+                    if (menu.classList.contains('invisible')) {
+                        // Close other dropdowns if open
+                        const categoryMenu = document.getElementById('category_menu');
+                        if (categoryMenu && !categoryMenu.classList.contains('invisible')) {
+                            toggleCategoryDropdown();
+                        }
+
+                        // Open
+                        menu.classList.remove('invisible', 'opacity-0', '-translate-y-2');
+                        arrow.classList.add('rotate-180');
+                    } else {
+                        // Close
+                        menu.classList.add('invisible', 'opacity-0', '-translate-y-2');
+                        arrow.classList.remove('rotate-180');
+                    }
+                }
+
+                function selectStatus(status) {
+                    document.getElementById('status_input').value = status;
+                    document.getElementById('status_text').innerText = status.charAt(0).toUpperCase() + status.slice(1);
+                    
+                    const indicator = document.getElementById('status_indicator');
+                    if (status === 'open') {
+                        indicator.className = 'w-2 h-2 rounded-full bg-green-500 shadow-[0_0_10px_rgba(34,197,94,0.4)]';
+                    } else {
+                        indicator.className = 'w-2 h-2 rounded-full bg-gray-400';
+                    }
+                    
+                    toggleStatusDropdown();
+                }
+
+                function toggleCategoryDropdown() {
+                    const menu = document.getElementById('category_menu');
+                    const arrow = document.getElementById('category_arrow');
+                    
+                    if (menu.classList.contains('invisible')) {
+                        // Close other dropdowns if open
+                        const statusMenu = document.getElementById('status_menu');
+                        if (statusMenu && !statusMenu.classList.contains('invisible')) {
+                            toggleStatusDropdown();
+                        }
+
+                        // Open
+                        menu.classList.remove('invisible', 'opacity-0', '-translate-y-2');
+                        arrow.classList.add('rotate-180');
+                    } else {
+                        // Close
+                        menu.classList.add('invisible', 'opacity-0', '-translate-y-2');
+                        arrow.classList.remove('rotate-180');
+                    }
+                }
+
+                function selectCategory(category, icon) {
+                    document.getElementById('category_input').value = category;
+                    document.getElementById('category_text').innerText = category;
+                    
+                    // Update main icon
+                    const iconContainer = document.getElementById('category_icon');
+                    // Remove old icon
+                    iconContainer.innerHTML = '';
+                    // Create new icon element
+                    const newIcon = document.createElement('i');
+                    newIcon.setAttribute('data-lucide', icon);
+                    newIcon.classList.add('w-4', 'h-4');
+                    iconContainer.appendChild(newIcon);
+                    
+                    // Re-initialize icons
+                    lucide.createIcons();
+                    
+                    toggleCategoryDropdown();
+                }
+
+                // Close dropdown on outside click
+                document.addEventListener('click', function(event) {
+                    const triggers = ['status_trigger', 'category_trigger'];
+                    const menus = ['status_menu', 'category_menu'];
+                    
+                    let isClickInside = false;
+                    
+                    triggers.forEach(id => {
+                        const el = document.getElementById(id);
+                        if(el && el.contains(event.target)) isClickInside = true;
+                    });
+                     menus.forEach(id => {
+                        const el = document.getElementById(id);
+                        if(el && el.contains(event.target)) isClickInside = true;
+                    });
+                    
+                    if (!isClickInside) {
+                        menus.forEach(id => {
+                            const el = document.getElementById(id);
+                            if(el) el.classList.add('invisible', 'opacity-0', '-translate-y-2');
+                        });
+                        ['status_arrow', 'category_arrow'].forEach(id => {
+                            const el = document.getElementById(id);
+                            if(el) el.classList.remove('rotate-180');
+                        });
+                    }
+                });
+                </script>
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div class="md:col-span-2 group">

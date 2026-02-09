@@ -17,46 +17,88 @@
       <input type="hidden" name="route" value="events" />
       
       <!-- District Filter -->
-      <div class="md:col-span-3 relative">
-        <label class="absolute -top-2 left-4 bg-white dark:bg-darkSurface px-2 text-[10px] font-black text-primary dark:text-[#4ade80] uppercase tracking-widest z-10">District</label>
-        <select
-          name="district"
-          class="w-full bg-gray-50 dark:bg-white/5 border-2 border-transparent dark:text-white rounded-2xl py-4 pl-6 pr-10 text-sm font-bold appearance-none focus:ring-2 focus:ring-primary focus:bg-white dark:focus:bg-darkSurface transition-all outline-none"
-        >
-          <option value="">All Districts</option>
-          <?php
-          $districts = ['Ampara', 'Anuradhapura', 'Badulla', 'Batticaloa', 'Colombo', 'Galle', 'Gampaha', 'Hambantota', 'Jaffna', 'Kalutara', 'Kandy', 'Kegalle', 'Kilinochchi', 'Kurunegala', 'Mannar', 'Matale', 'Matara', 'Moneragala', 'Mullaitivu', 'Nuwara Eliya', 'Polonnaruwa', 'Puttalam', 'Ratnapura', 'Trincomalee', 'Vavuniya'];
-          foreach ($districts as $d):
-          ?>
-            <option value="<?php echo $d; ?>" <?php echo ($_GET['district'] ?? '') === $d ? 'selected' : ''; ?>>
-              <?php echo $d; ?>
-            </option>
-          <?php endforeach; ?>
-        </select>
-        <div class="absolute inset-y-0 right-5 flex items-center pointer-events-none text-xs opacity-50 dark:text-white/50">
-          <i data-lucide="chevron-down" class="w-4 h-4"></i>
+      <div class="md:col-span-3 relative group">
+        <label class="block text-xs font-black text-[#121613] dark:text-gray-200 uppercase tracking-[0.2em] mb-2">District</label>
+        <input type="hidden" name="district" id="district_input" value="<?php echo h($_GET['district'] ?? ''); ?>">
+        
+        <div id="district_trigger" onclick="toggleDropdown('district_menu', 'district_arrow')" 
+             class="w-full px-5 py-4 rounded-2xl bg-gray-50 dark:bg-white/5 border-2 border-transparent hover:border-primary/10 cursor-pointer flex items-center justify-between transition-all">
+            <div class="flex items-center gap-3 overflow-hidden">
+                <div class="w-8 h-8 rounded-full bg-primary/5 dark:bg-white/5 flex-shrink-0 flex items-center justify-center text-primary dark:text-[#4ade80]">
+                    <i data-lucide="map" class="w-4 h-4"></i>
+                </div>
+                <span id="district_text" class="font-bold text-[#121613] dark:text-white truncate">
+                    <?php echo !empty($_GET['district']) ? h($_GET['district']) : 'All Districts'; ?>
+                </span>
+            </div>
+            <i data-lucide="chevron-down" id="district_arrow" class="w-4 h-4 text-[#677e6b] transition-transform duration-300"></i>
+        </div>
+
+        <div id="district_menu" class="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-[#1A1E1B] rounded-2xl shadow-xl border border-gray-100 dark:border-white/5 overflow-hidden transition-all duration-300 opacity-0 invisible transform -translate-y-2 origin-top z-50">
+            <div class="p-2 space-y-1 max-h-[300px] overflow-y-auto custom-scrollbar">
+                <div onclick="selectOption('district', '')" class="px-4 py-3 rounded-xl hover:bg-gray-50 dark:hover:bg-white/5 cursor-pointer font-bold text-gray-400 text-sm">All Districts</div>
+                <?php
+                $districts = ['Ampara', 'Anuradhapura', 'Badulla', 'Batticaloa', 'Colombo', 'Galle', 'Gampaha', 'Hambantota', 'Jaffna', 'Kalutara', 'Kandy', 'Kegalle', 'Kilinochchi', 'Kurunegala', 'Mannar', 'Matale', 'Matara', 'Moneragala', 'Mullaitivu', 'Nuwara Eliya', 'Polonnaruwa', 'Puttalam', 'Ratnapura', 'Trincomalee', 'Vavuniya'];
+                foreach ($districts as $d):
+                ?>
+                <div onclick="selectOption('district', '<?php echo $d; ?>')" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-gray-50 dark:hover:bg-white/5 cursor-pointer transition-colors">
+                     <span class="font-bold text-[#121613] dark:text-white text-sm"><?php echo $d; ?></span>
+                </div>
+                <?php endforeach; ?>
+            </div>
         </div>
       </div>
 
       <!-- Category Filter -->
-      <div class="md:col-span-3 relative">
-        <label class="absolute -top-2 left-4 bg-white dark:bg-darkSurface px-2 text-[10px] font-black text-primary dark:text-[#4ade80] uppercase tracking-widest z-10">Category</label>
-        <select
-          name="category"
-          class="w-full bg-gray-50 dark:bg-white/5 border-2 border-transparent dark:text-white rounded-2xl py-4 pl-6 pr-10 text-sm font-bold appearance-none focus:ring-2 focus:ring-primary focus:bg-white dark:focus:bg-darkSurface transition-all outline-none"
-        >
-          <option value="">All Categories</option>
-          <?php
-          $categories = ['Beach & Coastal Cleanups', 'Waterway & Wetland Cleanups', 'Park & Forest Cleanups', 'Urban & Street Cleanups', 'Underwater/Dive Cleanups', 'Tree Planting & Reforestation', 'General Cleanup'];
-          foreach ($categories as $c):
-          ?>
-            <option value="<?php echo $c; ?>" <?php echo ($_GET['category'] ?? '') === $c ? 'selected' : ''; ?>>
-              <?php echo $c; ?>
-            </option>
-          <?php endforeach; ?>
-        </select>
-        <div class="absolute inset-y-0 right-5 flex items-center pointer-events-none text-xs opacity-50 dark:text-white/50">
-          <i data-lucide="chevron-down" class="w-4 h-4"></i>
+      <div class="md:col-span-3 relative group">
+        <label class="block text-xs font-black text-[#121613] dark:text-gray-200 uppercase tracking-[0.2em] mb-2">Category</label>
+        <input type="hidden" name="category" id="category_input" value="<?php echo h($_GET['category'] ?? ''); ?>">
+
+        <?php
+        $categoryIcons = [
+            'Beach & Coastal Cleanups' => 'waves',
+            'Waterway & Wetland Cleanups' => 'droplets',
+            'Park & Forest Cleanups' => 'trees',
+            'Urban & Street Cleanups' => 'building-2',
+            'Underwater/Dive Cleanups' => 'anchor',
+            'Tree Planting & Reforestation' => 'shrub',
+            'General Cleanup' => 'sprout'
+        ];
+        $currentCat = $_GET['category'] ?? '';
+        $currentIcon = $categoryIcons[$currentCat] ?? 'tag';
+        ?>
+
+        <div id="category_trigger" onclick="toggleDropdown('category_menu', 'category_arrow')" 
+             class="w-full px-5 py-4 rounded-2xl bg-[#f0f5f1] dark:bg-white/5 border-2 border-transparent hover:border-primary/10 cursor-pointer flex items-center justify-between transition-all">
+            <div class="flex items-center gap-3 overflow-hidden">
+                <div id="category_icon_display" class="w-8 h-8 rounded-full bg-[#2c4931]/10 dark:bg-[#4ade80]/10 flex-shrink-0 flex items-center justify-center text-[#2c4931] dark:text-[#4ade80]">
+                    <i data-lucide="<?php echo $currentIcon; ?>" class="w-4 h-4"></i>
+                </div>
+                <span id="category_text" class="font-bold text-[#121613] dark:text-white truncate">
+                     <?php echo !empty($currentCat) ? h($currentCat) : 'All Categories'; ?>
+                </span>
+            </div>
+            <i data-lucide="chevron-down" id="category_arrow" class="w-4 h-4 text-[#677e6b] transition-transform duration-300"></i>
+        </div>
+
+        <div id="category_menu" class="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-[#1A1E1B] rounded-2xl shadow-xl border border-gray-100 dark:border-white/5 overflow-hidden transition-all duration-300 opacity-0 invisible transform -translate-y-2 origin-top z-50">
+            <div class="p-2 space-y-1 max-h-[300px] overflow-y-auto custom-scrollbar">
+                <div onclick="selectCategoryOption('', 'tag')" class="px-4 py-3 rounded-xl hover:bg-gray-50 dark:hover:bg-white/5 cursor-pointer flex items-center gap-3 transition-colors">
+                     <div class="w-8 h-8 rounded-full bg-gray-50 dark:bg-white/5 flex items-center justify-center text-gray-400">
+                        <i data-lucide="tag" class="w-4 h-4"></i>
+                    </div>
+                    <span class="font-bold text-gray-400 text-sm">All Categories</span>
+                </div>
+                <?php foreach ($categoryIcons as $id => $icon): ?>
+                <div onclick="selectCategoryOption('<?php echo $id; ?>', '<?php echo $icon; ?>')" 
+                     class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-gray-50 dark:hover:bg-white/5 cursor-pointer transition-colors group/item">
+                    <div class="w-8 h-8 rounded-full bg-gray-50 dark:bg-white/5 flex items-center justify-center text-gray-400 group-hover/item:text-primary dark:group-hover/item:text-[#4ade80] transition-colors">
+                        <i data-lucide="<?php echo $icon; ?>" class="w-4 h-4"></i>
+                    </div>
+                     <span class="font-bold text-[#121613] dark:text-white text-sm"><?php echo $id; ?></span>
+                </div>
+                <?php endforeach; ?>
+            </div>
         </div>
       </div>
 
@@ -185,3 +227,96 @@
     <?php endif; ?>
   </div>
 </div>
+
+<script>
+function toggleDropdown(menuId, arrowId) {
+    const menu = document.getElementById(menuId);
+    const arrow = document.getElementById(arrowId);
+    
+    // Close other dropdowns first
+    ['district_menu', 'category_menu'].forEach(id => {
+        if (id !== menuId) {
+            const el = document.getElementById(id);
+            if (el) el.classList.add('invisible', 'opacity-0', '-translate-y-2');
+        }
+    });
+
+    if (menu.classList.contains('invisible')) {
+        menu.classList.remove('invisible', 'opacity-0', '-translate-y-2');
+        if(arrow) arrow.classList.add('rotate-180');
+    } else {
+        menu.classList.add('invisible', 'opacity-0', '-translate-y-2');
+        if(arrow) arrow.classList.remove('rotate-180');
+    }
+}
+
+function selectOption(type, value) {
+    // Update Hidden Input
+    const input = document.getElementById(type + '_input');
+    if(input) input.value = value;
+    
+    // Update Display Text
+    const displayText = document.getElementById(type + '_text');
+    let label = '';
+    if(type === 'district') label = value ? value : 'All Districts';
+    
+    if(displayText) displayText.innerText = label;
+    
+    // Close Dropdown
+    const menu = document.getElementById(type + '_menu');
+    if(menu) menu.classList.add('invisible', 'opacity-0', '-translate-y-2');
+    
+    const arrow = document.getElementById(type + '_arrow');
+    if(arrow) arrow.classList.remove('rotate-180');
+}
+
+function selectCategoryOption(value, icon) {
+    // Update Hidden Input
+    document.getElementById('category_input').value = value;
+    
+    // Update Display Text
+    const label = value ? value : 'All Categories';
+    document.getElementById('category_text').innerText = label;
+
+    // Update Icon
+    const iconContainer = document.getElementById('category_icon_display');
+    iconContainer.innerHTML = `<i data-lucide="${icon}" class="w-4 h-4"></i>`;
+    
+    // Close Dropdown
+    const menu = document.getElementById('category_menu');
+    menu.classList.add('invisible', 'opacity-0', '-translate-y-2');
+    
+    const arrow = document.getElementById('category_arrow');
+    arrow.classList.remove('rotate-180');
+
+    // Refresh Icons
+    lucide.createIcons();
+}
+
+// Global click to close
+document.addEventListener('click', function(event) {
+    const triggers = ['district_trigger', 'category_trigger'];
+    const menus = ['district_menu', 'category_menu'];
+    
+    let isClickInside = false;
+    triggers.forEach(id => {
+        const el = document.getElementById(id);
+        if(el && el.contains(event.target)) isClickInside = true;
+    });
+    menus.forEach(id => {
+        const el = document.getElementById(id);
+        if(el && el.contains(event.target)) isClickInside = true;
+    });
+    
+    if (!isClickInside) {
+        menus.forEach(id => {
+            const el = document.getElementById(id);
+            if(el) el.classList.add('invisible', 'opacity-0', '-translate-y-2');
+        });
+        ['district_arrow', 'category_arrow'].forEach(id => {
+            const el = document.getElementById(id);
+            if(el) el.classList.remove('rotate-180');
+        });
+    }
+});
+</script>
